@@ -6362,4 +6362,15 @@ a.text-dark:focus, a.text-dark:hover {
 i.large {
   font-size: 36px; }
 
+.bg-atraumatic {
+  margin-top: -32px;
+  background: url("atraumaticBG.jpg") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover; }
+
+.black {
+  background-color: #000; }
+
 /*# sourceMappingURL=custom.css.map */
