@@ -6354,7 +6354,7 @@ a.text-dark:focus, a.text-dark:hover {
   visibility: hidden !important; }
 
 .full-screen {
-  min-height: 84vh; }
+  min-height: 94vh; }
 
 .primary-color {
   background-color: #20c997; }
@@ -6414,6 +6414,20 @@ i.large {
   border: 0 !important; }
 
 .width-auto {
-  width: auto; }
+  width: auto !important; }
+
+.bg-imaged {
+  margin-top: -32px;
+  background: url("equipment-bg.jpg") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover; }
+
+.mark-title {
+  line-height: 2.0;
+  padding: 8px;
+  color: white;
+  background-color: rgba(80, 80, 80, 0.7); }
 
 /*# sourceMappingURL=custom.css.map */
