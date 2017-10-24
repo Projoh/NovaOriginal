@@ -75,7 +75,7 @@ function showThankYouScreen() {
     doneMessageText += " In the mean time, please feel free to take a look at our <a class=\"text-primary\" href=\"\/catalog.html\">Catalog<\/a>.";
 
     $("html, body").animate({ scrollTop: 0 }, "slow");
-    headingContainer.addClass('full-screen');
+    headingContainer.addClass('full-screen no-margin');
     titleText.html("Thank you.");
     doneMessage.html(doneMessageText);
 

@@ -6390,4 +6390,30 @@ i.large {
   float: right;
   line-height: 32px !important; }
 
+.no-margin {
+  margin: 0 !important; }
+
+.search-button {
+  border: 0;
+  border-top-right-radius: 0 !important; }
+
+.no-top-padding {
+  padding-top: 0; }
+
+.no-bottom-padding {
+  padding-bottom: 0; }
+
+.no-border-left-top {
+  border-left: 0;
+  border-top-left-radius: 0; }
+
+.primary-color-text {
+  color: #20c997; }
+
+.no-border {
+  border: 0 !important; }
+
+.width-auto {
+  width: auto; }
+
 /*# sourceMappingURL=custom.css.map */
