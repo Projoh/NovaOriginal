@@ -30,7 +30,7 @@ $(function () {
 
 
         firebase.auth().createUserWithEmailAndPassword(email, password).catch(function (error) {
-            updateErrorMessage(error);
+            updateErrorMessage(error.message);
         });
 
     }
@@ -40,8 +40,13 @@ $(function () {
         $('#error-text').html("");
         var password = $('#password').val();
         var password2 = $('#password2').val();
+        grecaptcha
         if (verifyPassword(password, password2)) {
-            AttemptRegister();
+            if(grecaptcha.getResponse()) {
+                AttemptRegister();
+            } else {
+                updateErrorMessage("Please prove you are not a robot by checking the box by the submit button.")
+            }
         } else {
             updateErrorMessage("Passwords don't match.")
         }
@@ -49,11 +54,10 @@ $(function () {
 });
 
 function updateErrorMessage(error) {
-    var errorCode = (error.code) ? error.code : "";
-    var errorMessage = (error.message) ? error.message : error;
+    var errorMessage = error;
     if (error !== "") {
-        $('#error-text').html(errorCode + "<br>" + errorMessage);
-        $("html, body").animate({ scrollTop: 0 }, "slow");
+        $('#error-text').html("<br>" + errorMessage);
+        $("html, body").animate({ scrollTop: 200 }, "slow");
 
     }
 
