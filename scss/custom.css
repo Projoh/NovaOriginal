@@ -6373,4 +6373,21 @@ i.large {
 .black {
   background-color: #000; }
 
+.red-text {
+  color: #dc3545; }
+
+.padding-top-10 {
+  padding-top: 16px; }
+
+.margin-top-10 {
+  margin-top: 16px; }
+
+.margin-bottom-10 {
+  margin-bottom: 16px; }
+
+.icon {
+  cursor: pointer;
+  float: right;
+  line-height: 32px !important; }
+
 /*# sourceMappingURL=custom.css.map */

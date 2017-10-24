@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Register</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="scss/custom.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+    <!--<link rel="stylesheet" href="css/index.css">-->
+</head>
+<body>
+    <div class="collapse bg-dark" id="navbarToggleExternalContent">
+        <div class=" p-4">
+            <ul class="nav justify-content-end">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#">HOME</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">CONTACT</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="jumbotron jumbotron-fluid primary-color text-white">
+
+        <nav class="navbar bg-transparent">
+            <p></p>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent"
+                    aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="material-icons large text-white">&#xE5D2;</i>
+            </button>
+
+        </nav>
+        <div class="container" id="heading-container">
+            <div class="row align-items-center">
+                <div class="col">
+                    <div class="container">
+                        <h1 class="display-3" id="title">Register</h1>
+                        <p class="lead" id="done-message"></p>
+                        <h1 id="error-text" class="display-4 red-text text-danger"></h1>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container" id="sign-up">
+        <a class="lead" href="">Already have an account? Login in.</a>
+        <form id="login-form" class="padding-top-10">
+
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" class="form-control form-control-lg" id="name" aria-describedby="emailHelp" placeholder="">
+                <small id="namehelp" class="form-text text-muted">Name of the person creating this account</small>
+            </div>
+            <div class="form-group">
+                <label for="company">Company Name</label>
+                <input type="text" class="form-control form-control-lg" id="company" placeholder="">
+            </div>
+            <div class="form-group">
+                <label for="telephone">Telephone Number</label>
+                <input type="number" class="form-control form-control-lg" id="telephone" placeholder="+11234567890">
+            </div>
+            <div class="form-group">
+                <label for="address">Full Address</label>
+                <input type="text" class="form-control form-control-lg" id="address" placeholder="1234 Street st City, State Zip Code">
+            </div>
+            <div class="form-group">
+                <label for="caresetting">Care Setting</label>
+                <select class="form-control form-control-lg" id="caresetting">
+                    <option>Surgery Center</option>
+                    <option>Community Center</option>
+                    <option>Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input type="email" class="form-control form-control-lg" id="email" aria-describedby="emailHelp" placeholder="example@example.com">
+                <small id="emailHelp" class="form-text text-muted">We wont share your email with anyone.</small>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control form-control-lg" id="password" placeholder="Password">
+            </div>
+            <div class="form-group">
+                <label for="password2">Re-type Password</label>
+                <input type="password" class="form-control form-control-lg" id="password2" placeholder="Password">
+            </div>
+            <div class="form-group">
+                <label for="message">Optional Message</label>
+                <textarea class="form-control" id="message" rows="3"></textarea>
+            </div>
+            <div class="g-recaptcha align-content-center" data-sitekey="6LeKmDUUAAAAABKX2DV2gkyxIsQSEnYR28f1s3AC"></div>
+            <button type="submit" class="btn btn-lg float-right margin-top-10 margin-bottom-10">Submit <i class="material-icons icon">&#xE409;</i>
+            </button>
+        </form>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+        integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+        crossorigin="anonymous"></script>
+<script src="js/bootstrap.min.js"
+        integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+        crossorigin="anonymous"></script>
+    <script src="js/base.js"></script>
+    <script src="js/register.js"></script>
+</body>
+</html>
