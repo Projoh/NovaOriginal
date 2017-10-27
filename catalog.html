@@ -28,7 +28,7 @@
 <div class="jumbotron jumbotron-fluid bg-dark text-white no-margin no-top-padding">
 
     <nav class="navbar bg-transparent">
-        <p class="lead padding-top-10">Nova Medical Technologies</p>
+        <p class="h4 padding-top-10 primary-color-text">Nova Medical Technologies</p>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent"
                 aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
             <i class="material-icons large text-white">&#xE5D2;</i>
@@ -48,23 +48,34 @@
         </div>
     </div>
 </div>
-<div class="input-group input-group-lg margin-bottom-10">
-    <input type="text" class="form-control no-border-left-top" placeholder="Search all items..." aria-label="search" aria-describedby="sizing-addon1">
-    <span class="input-group-addon bg-dark search-button" id="sizing-addon1"><i class="material-icons large text-white">&#xE8B6;</i></span>
-</div>
 
+<div class="bg-light">
 <div class="container">
-    <h1 class="display-4" id="items">Items</h1>
+
 
     <div class="row margin-bottom-10">
-        <div class="col align-content-start">
-            <label for="categories-select">Category</label>
+        <div class="col">
 
-            <select class="form-control form-control-lg" id="categories-select">
-                <option>Dental Probes</option>
-            </select>
+            <div class="row margin-top-10">
+                <div class="col align-content-start">
+                    <select class="form-control form-control-lg" id="categories-select" style="height: calc(2.875rem + 8px);">
+                        <option>Categories</option>
+                        <option>Dental Probes</option>
+                    </select>
+                </div>
+            </div>
         </div>
+
+        <div class="col">
+            <div class="input-group input-group-lg margin-top-10">
+                <input type="text" class="form-control" placeholder="Search all items..." aria-label="search" aria-describedby="sizing-addon1">
+                <span class="input-group-addon bg-dark" id="sizing-addon1"><i class="material-icons large text-white">&#xE8B6;</i></span>
+            </div>
+
+        </div>
+
     </div>
+
 
 
 
@@ -267,7 +278,7 @@
 
     </div>
 
-
+</div>
 </footer>
 
 
