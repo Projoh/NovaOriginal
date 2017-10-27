@@ -6414,7 +6414,9 @@ i.large {
   border: 0 !important; }
 
 .width-auto {
-  width: auto !important; }
+  width: auto !important;
+  max-width: 100% !important;
+}
 
 .bg-imaged {
   margin-top: -32px;
