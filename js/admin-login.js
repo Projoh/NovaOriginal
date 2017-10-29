@@ -13,7 +13,7 @@ function initializeFireBase() {
 function initializeAuthListener() {
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
-            //window.location.href = "admin.html";
+            window.location.href = "admin.html";
         } else {
             // No user is signed in.
         }

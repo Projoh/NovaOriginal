@@ -40,7 +40,6 @@ $(function () {
         $('#error-text').html("");
         var password = $('#password').val();
         var password2 = $('#password2').val();
-        grecaptcha
         if (verifyPassword(password, password2)) {
             if(grecaptcha.getResponse()) {
                 AttemptRegister();

@@ -25,4 +25,21 @@ $( document ).ready(function() {
 
     initializeFireBase();
     initializeAuthListener();
+
 });
+
+function goToContact() {
+    var ContactUsDiv = $('#contact_us');
+
+    $('html, body').animate({
+        scrollTop: $("#contact_us").offset().top
+    }, 1000);
+}
+
+function openLoginModal() {
+    $('.navbar-toggler').click();
+    $('#loginModal').modal({
+        keyboard: false
+    })
+    $('#loginModal').modal('show');
+}
