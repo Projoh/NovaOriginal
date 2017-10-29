@@ -29,10 +29,11 @@ function showContent(content) {
     var allAnchors = $('#nav-bar').find( "a" );
     allAnchors.each(function () {
         var anchor = $(this);
-        $(anchor).removeClass("bg-dark text-white")
+        $(anchor).removeClass("bg-dark text-white");
+        $(anchor).addClass("text-dark")
     });
-
-    anchorToHighlight.addClass("bg-dark text-white");
+    $(anchorToHighlight).removeClass("text-dark");
+    $(anchorToHighlight).addClass("bg-dark text-white");
     $(containerToShow).removeClass('gone');
 }
 
