@@ -10,6 +10,9 @@ function initializeAuthListener() {
     });
 }
 
+
+
+
 $(document).ready(function () {
     console.log("Initialized!");
     initializeAuthListener();
@@ -92,6 +95,7 @@ function createNewUser(userID) {
     newUser.address = sanitizeInput($('#address').val());
     newUser.message = sanitizeInput($('#message').val());
     newUser.careSetting = sanitizeInput($('#caresetting').find(":selected").text());
+    newUser.registerTime = Math.round(new Date() / 1000);
 
 
     var userRef = database.ref('users/' + userID);
@@ -102,7 +106,8 @@ function createNewUser(userID) {
         telephone: newUser.telephone,
         address: newUser.address,
         message: newUser.message,
-        careSetting: newUser.careSetting
+        careSetting: newUser.careSetting,
+        registerTime: newUser.registerTime
     }).then(function () {
         // Redirect User
         showThankYouScreen();
@@ -118,6 +123,7 @@ function User() {
     this.address = "";
     this.message = "";
     this.careSetting = "";
+    this.registerTime = 0;
 }
 
 function verifyPassword(a, b) {

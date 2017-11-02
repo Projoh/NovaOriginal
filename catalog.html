@@ -12,6 +12,10 @@
     <!--<link rel="stylesheet" href="css/index.css">-->
 </head>
 <body>
+<div class="progress gone">
+    <div id="progress-bar" class="progress-bar primary-color" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
+
 <div class="collapse primary-color" id="navbarToggleExternalContent">
     <div class=" p-4">
         <ul class="nav justify-content-end">
@@ -29,7 +33,8 @@
 </div>
 
 
-<div id="loginModal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+<div id="loginModal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog"
+     aria-labelledby="myLargeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
 
@@ -41,7 +46,7 @@
                 </p>
 
 
-                <div class="container" >
+                <div class="container">
                     <div class="row align-items-center">
                         <div class="col">
                             <div class="container">
@@ -59,7 +64,8 @@
                 <form class="padding-top-10" id="login-form">
                     <div class="form-group">
                         <label for="exampleInputEmail1">Email address</label>
-                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                               placeholder="Enter email">
                     </div>
                     <div class="form-group">
                         <label for="exampleInputPassword1">Password</label>
@@ -72,7 +78,6 @@
         </div>
     </div>
 </div>
-
 
 
 <div class="jumbotron jumbotron-fluid bg-dark text-white no-margin no-top-padding">
@@ -89,7 +94,7 @@
         <div class="row align-items-center">
             <div class="col">
                 <div class="containe margin-top-10">
-                    <h1 class="display-3" >Catalog</h1>
+                    <h1 class="display-3">Catalog</h1>
                 </div>
 
             </div>
@@ -98,253 +103,393 @@
 </div>
 
 <div class="bg-light">
-<div class="container">
+    <div class="container">
 
 
-    <div class="row margin-bottom-10">
-        <div class="col">
-
-            <div class="row margin-top-10">
-                <div class="col align-content-start">
-                    <select class="form-control form-control-lg" id="categories-select" style="height: calc(2.875rem + 8px);">
-                        <option>Categories</option>
-                        <option>Dental Probes</option>
-                    </select>
+        <div class="row margin-bottom-10">
+            <div class="col-sm-12">
+                <div class="input-group input-group-lg margin-top-10">
+                    <input type="text" class="form-control" placeholder="Search all items..." aria-label="search"
+                           aria-describedby="sizing-addon1" id="search-catalog">
+                    <span class="input-group-addon bg-dark" id="sizing-addon1"><i
+                            class="material-icons large text-white">&#xE8B6;</i></span>
                 </div>
-            </div>
-        </div>
 
-        <div class="col">
-            <div class="input-group input-group-lg margin-top-10">
-                <input type="text" class="form-control" placeholder="Search all items..." aria-label="search" aria-describedby="sizing-addon1">
-                <span class="input-group-addon bg-dark" id="sizing-addon1"><i class="material-icons large text-white">&#xE8B6;</i></span>
             </div>
 
-        </div>
+            <div class="col">
 
-    </div>
-
-
-
-
-    <div class="items">
-        <div class="row">
-            <div class="col-sm-12 col-md-6 col-lg-4 margin-bottom-10" >
-                <div class="card text-white">
-                    <div class="img mx-auto row align-items-center" style="height: 300px;width:auto;">
-                        <img class="col card-img-top mh-100 width-auto" src="assets/scissorsExampe.PNG" alt="Card image cap">
+                <div class="row margin-top-10">
+                    <div class="col align-content-start">
+                        <select class="form-control form-control-lg" id="categories-select"
+                                style="height: calc(2.875rem + 8px);">
+                            <option>Categories</option>
+                            <option>Dental Probes</option>
+                        </select>
                     </div>
-                    <div class="card-body bg-dark">
-                        <h4 class="card-title primary-color-text">Item Name</h4>
-                        <p class="card-text text-truncate" style="height: 4rem;">Some Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome Explaination</p>
-                        <div class="card-footer float-right bg-transparent no-border no-top-padding no-bottom-padding">
-                            <a href="#" class="btn primary-color-text">Details</a>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="col-sm-12 col-md-6 col-lg-4 margin-bottom-10" >
-                <div class="card text-white">
-                    <div class="img mx-auto row align-items-center" style="height: 300px;width:auto;">
-                        <img class="col card-img-top mh-100 width-auto" src="assets/moutAndToungeExample.PNG" alt="Card image cap">
-                    </div>
-                    <div class="card-body bg-dark">
-                        <h4 class="card-title primary-color-text">Item Name</h4>
-                        <p class="card-text text-truncate" style="height: 4rem;">Some Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome Explaination</p>
-                        <div class="card-footer float-right bg-transparent no-border no-top-padding no-bottom-padding">
-                            <a href="#" class="btn primary-color-text">Details</a>
-                        </div>
-                    </div>
-
                 </div>
             </div>
 
+            <div class="col">
 
-            <div class="col-sm-12 col-md-6 col-lg-4 margin-bottom-10" >
-                <div class="card text-white">
-                    <div class="img mx-auto row align-items-center" style="height: 300px;width:auto;">
-                        <img class="col card-img-top mh-100 width-auto" src="assets/scissorsExampe.PNG" alt="Card image cap">
+                <div class="row margin-top-10">
+                    <div class="col align-content-start">
+                        <select class="form-control form-control-lg" id="subcategories-select"
+                                style="height: calc(2.875rem + 8px);">
+                            <option>Sub-Categories</option>
+                            <option>Dental Probes</option>
+                        </select>
                     </div>
-                    <div class="card-body bg-dark">
-                        <h4 class="card-title primary-color-text">Item Name</h4>
-                        <p class="card-text text-truncate" style="height: 4rem;">Some Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome Explaination</p>
-                        <div class="card-footer float-right bg-transparent no-border no-top-padding no-bottom-padding">
-                            <a href="#" class="btn primary-color-text">Details</a>
-                        </div>
-                    </div>
-
                 </div>
             </div>
-
-            <div class="col-sm-12 col-md-6 col-lg-4 margin-bottom-10" >
-                <div class="card text-white">
-                    <div class="img mx-auto row align-items-center" style="height: 300px;width:auto;">
-                        <img class="col card-img-top mh-100 width-auto" src="assets/scissorsExampe.PNG" alt="Card image cap">
-                    </div>
-                    <div class="card-body bg-dark">
-                        <h4 class="card-title primary-color-text">Item Name</h4>
-                        <p class="card-text text-truncate" style="height: 4rem;">Some Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome Explaination</p>
-                        <div class="card-footer float-right bg-transparent no-border no-top-padding no-bottom-padding">
-                            <a href="#" class="btn primary-color-text">Details</a>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="col-sm-12 col-md-6 col-lg-4 margin-bottom-10" >
-                <div class="card text-white">
-                    <div class="img mx-auto row align-items-center" style="height: 300px;width:auto;">
-                        <img class="col card-img-top mh-100 width-auto" src="assets/scissorsExampe.PNG" alt="Card image cap">
-                    </div>
-                    <div class="card-body bg-dark">
-                        <h4 class="card-title primary-color-text">Item Name</h4>
-                        <p class="card-text text-truncate" style="height: 4rem;">Some Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome Explaination</p>
-                        <div class="card-footer float-right bg-transparent no-border no-top-padding no-bottom-padding">
-                            <a href="#" class="btn primary-color-text">Details</a>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-
-            <div class="col-sm-12 col-md-6 col-lg-4 margin-bottom-10" >
-                <div class="card text-white">
-                    <div class="img mx-auto row align-items-center" style="height: 300px;width:auto;">
-                        <img class="col card-img-top mh-100 width-auto" src="assets/scissorsExampe.PNG" alt="Card image cap">
-                    </div>
-                    <div class="card-body bg-dark">
-                        <h4 class="card-title primary-color-text">Item Name</h4>
-                        <p class="card-text text-truncate" style="height: 4rem;">Some Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome Explaination</p>
-                        <div class="card-footer float-right bg-transparent no-border no-top-padding no-bottom-padding">
-                            <a href="#" class="btn primary-color-text">Details</a>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="col-sm-12 col-md-6 col-lg-4 margin-bottom-10" >
-                <div class="card text-white">
-                    <div class="img mx-auto row align-items-center" style="height: 300px;width:auto;">
-                        <img class="col card-img-top mh-100 width-auto" src="assets/scissorsExampe.PNG" alt="Card image cap">
-                    </div>
-                    <div class="card-body bg-dark">
-                        <h4 class="card-title primary-color-text">Item Name</h4>
-                        <p class="card-text text-truncate" style="height: 4rem;">Some Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome Explaination</p>
-                        <div class="card-footer float-right bg-transparent no-border no-top-padding no-bottom-padding">
-                            <a href="#" class="btn primary-color-text">Details</a>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="col-sm-12 col-md-6 col-lg-4 margin-bottom-10" >
-                <div class="card text-white">
-                    <div class="img mx-auto row align-items-center" style="height: 300px;width:auto;">
-                        <img class="col card-img-top mh-100 width-auto" src="assets/scissorsExampe.PNG" alt="Card image cap">
-                    </div>
-                    <div class="card-body bg-dark">
-                        <h4 class="card-title primary-color-text">Item Name</h4>
-                        <p class="card-text text-truncate" style="height: 4rem;">Some Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome Explaination</p>
-                        <div class="card-footer float-right bg-transparent no-border no-top-padding no-bottom-padding">
-                            <a href="#" class="btn primary-color-text">Details</a>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-
-            <div class="col-sm-12 col-md-6 col-lg-4 margin-bottom-10" >
-                <div class="card text-white">
-                    <div class="img mx-auto row align-items-center" style="height: 300px;width:auto;">
-                        <img class="col card-img-top mh-100 width-auto" src="assets/scissorsExampe.PNG" alt="Card image cap">
-                    </div>
-                    <div class="card-body bg-dark">
-                        <h4 class="card-title primary-color-text">Item Name</h4>
-                        <p class="card-text text-truncate" style="height: 4rem;">Some Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome Explainationome Explaination</p>
-                        <div class="card-footer float-right bg-transparent no-border no-top-padding no-bottom-padding">
-                            <a href="#" class="btn primary-color-text">Details</a>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
 
 
         </div>
-    </div>
 
 
-</div>
-
-<footer class="bg-dark no-margin">
-    <div class="jumbotron bg-dark no-margin text-white">
-        <div class="container-fluid">
-
+        <div class="items">
             <div class="row">
-                <div class="col-sm-12 col-md-4">
-                    <h6>About</h6>
-                    <p class="h6">
-                    <ul class="list-unstyled">
-                        <li>Lorem ipsum dolor sit amet</li>
-                        <li>Consectetur adipiscing elit</li>
-                        <li>Integer molestie lorem at massa</li>
-                    </ul>
-                    </p>
+                <div class="col-sm-12 col-md-6 col-lg-4 margin-bottom-10">
+                    <div class="card text-white">
+                        <div class="img mx-auto row align-items-center" style="height: 300px;width:auto;">
+                            <img class="col card-img-top mh-100 width-auto" src="assets/scissorsExampe.PNG"
+                                 alt="Card image cap">
+                        </div>
+                        <div class="card-body bg-dark">
+                            <h4 class="card-title primary-color-text">Item Name</h4>
+                            <p class="card-text text-truncate" style="height: 4rem;">Some Explainationome
+                                ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome
+                                Explainationome ExplainationSome Explainationome ExplainationSome Explainationome
+                                ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome
+                                Explainationome ExplainationSome Explainationome ExplainationSome Explainationome
+                                ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome
+                                Explainationome ExplainationSome Explainationome ExplainationSome Explainationome
+                                Explaination</p>
+                            <div class="card-footer float-right bg-transparent no-border no-top-padding no-bottom-padding">
+                                <a href="#" class="btn primary-color-text">Details</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-4 margin-bottom-10">
+                    <div class="card text-white">
+                        <div class="img mx-auto row align-items-center" style="height: 300px;width:auto;">
+                            <img class="col card-img-top mh-100 width-auto" src="assets/moutAndToungeExample.PNG"
+                                 alt="Card image cap">
+                        </div>
+                        <div class="card-body bg-dark">
+                            <h4 class="card-title primary-color-text">Item Name</h4>
+                            <p class="card-text text-truncate" style="height: 4rem;">Some Explainationome
+                                ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome
+                                Explainationome ExplainationSome Explainationome ExplainationSome Explainationome
+                                ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome
+                                Explainationome ExplainationSome Explainationome ExplainationSome Explainationome
+                                ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome
+                                Explainationome ExplainationSome Explainationome ExplainationSome Explainationome
+                                Explaination</p>
+                            <div class="card-footer float-right bg-transparent no-border no-top-padding no-bottom-padding">
+                                <a href="#" class="btn primary-color-text">Details</a>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
 
 
-                <div class="col-sm-12 col-md-4">
-                    <h6>Prodcuts</h6>
-                    <p class="h6">
-                    <ul class="list-unstyled">
-                        <li>Lorem ipsum dolor sit amet</li>
-                        <li>Consectetur adipiscing elit</li>
-                        <li>Integer molestie lorem at massa</li>
-                    </ul>
-                    </p>
+                <div class="col-sm-12 col-md-6 col-lg-4 margin-bottom-10">
+                    <div class="card text-white">
+                        <div class="img mx-auto row align-items-center" style="height: 300px;width:auto;">
+                            <img class="col card-img-top mh-100 width-auto" src="assets/scissorsExampe.PNG"
+                                 alt="Card image cap">
+                        </div>
+                        <div class="card-body bg-dark">
+                            <h4 class="card-title primary-color-text">Item Name</h4>
+                            <p class="card-text text-truncate" style="height: 4rem;">Some Explainationome
+                                ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome
+                                Explainationome ExplainationSome Explainationome ExplainationSome Explainationome
+                                ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome
+                                Explainationome ExplainationSome Explainationome ExplainationSome Explainationome
+                                ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome
+                                Explainationome ExplainationSome Explainationome ExplainationSome Explainationome
+                                Explaination</p>
+                            <div class="card-footer float-right bg-transparent no-border no-top-padding no-bottom-padding">
+                                <a href="#" class="btn primary-color-text">Details</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-sm-12 col-md-6 col-lg-4 margin-bottom-10">
+                    <div class="card text-white">
+                        <div class="img mx-auto row align-items-center" style="height: 300px;width:auto;">
+                            <img class="col card-img-top mh-100 width-auto" src="assets/scissorsExampe.PNG"
+                                 alt="Card image cap">
+                        </div>
+                        <div class="card-body bg-dark">
+                            <h4 class="card-title primary-color-text">Item Name</h4>
+                            <p class="card-text text-truncate" style="height: 4rem;">Some Explainationome
+                                ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome
+                                Explainationome ExplainationSome Explainationome ExplainationSome Explainationome
+                                ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome
+                                Explainationome ExplainationSome Explainationome ExplainationSome Explainationome
+                                ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome
+                                Explainationome ExplainationSome Explainationome ExplainationSome Explainationome
+                                Explaination</p>
+                            <div class="card-footer float-right bg-transparent no-border no-top-padding no-bottom-padding">
+                                <a href="#" class="btn primary-color-text">Details</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-4 margin-bottom-10">
+                    <div class="card text-white">
+                        <div class="img mx-auto row align-items-center" style="height: 300px;width:auto;">
+                            <img class="col card-img-top mh-100 width-auto" src="assets/scissorsExampe.PNG"
+                                 alt="Card image cap">
+                        </div>
+                        <div class="card-body bg-dark">
+                            <h4 class="card-title primary-color-text">Item Name</h4>
+                            <p class="card-text text-truncate" style="height: 4rem;">Some Explainationome
+                                ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome
+                                Explainationome ExplainationSome Explainationome ExplainationSome Explainationome
+                                ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome
+                                Explainationome ExplainationSome Explainationome ExplainationSome Explainationome
+                                ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome
+                                Explainationome ExplainationSome Explainationome ExplainationSome Explainationome
+                                Explaination</p>
+                            <div class="card-footer float-right bg-transparent no-border no-top-padding no-bottom-padding">
+                                <a href="#" class="btn primary-color-text">Details</a>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
 
 
-                <div class="col-sm-12 col-md-4">
-                    <h6>Legal</h6>
-                    <p class="h6">
-                    <ul class="list-unstyled">
-                        <li>Lorem ipsum dolor sit amet</li>
-                        <li>Consectetur adipiscing elit</li>
-                        <li>Integer molestie lorem at massa</li>
-                    </ul>
-                    </p>
+                <div class="col-sm-12 col-md-6 col-lg-4 margin-bottom-10">
+                    <div class="card text-white">
+                        <div class="img mx-auto row align-items-center" style="height: 300px;width:auto;">
+                            <img class="col card-img-top mh-100 width-auto" src="assets/scissorsExampe.PNG"
+                                 alt="Card image cap">
+                        </div>
+                        <div class="card-body bg-dark">
+                            <h4 class="card-title primary-color-text">Item Name</h4>
+                            <p class="card-text text-truncate" style="height: 4rem;">Some Explainationome
+                                ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome
+                                Explainationome ExplainationSome Explainationome ExplainationSome Explainationome
+                                ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome
+                                Explainationome ExplainationSome Explainationome ExplainationSome Explainationome
+                                ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome
+                                Explainationome ExplainationSome Explainationome ExplainationSome Explainationome
+                                Explaination</p>
+                            <div class="card-footer float-right bg-transparent no-border no-top-padding no-bottom-padding">
+                                <a href="#" class="btn primary-color-text">Details</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-sm-12 col-md-6 col-lg-4 margin-bottom-10">
+                    <div class="card text-white">
+                        <div class="img mx-auto row align-items-center" style="height: 300px;width:auto;">
+                            <img class="col card-img-top mh-100 width-auto" src="assets/scissorsExampe.PNG"
+                                 alt="Card image cap">
+                        </div>
+                        <div class="card-body bg-dark">
+                            <h4 class="card-title primary-color-text">Item Name</h4>
+                            <p class="card-text text-truncate" style="height: 4rem;">Some Explainationome
+                                ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome
+                                Explainationome ExplainationSome Explainationome ExplainationSome Explainationome
+                                ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome
+                                Explainationome ExplainationSome Explainationome ExplainationSome Explainationome
+                                ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome
+                                Explainationome ExplainationSome Explainationome ExplainationSome Explainationome
+                                Explaination</p>
+                            <div class="card-footer float-right bg-transparent no-border no-top-padding no-bottom-padding">
+                                <a href="#" class="btn primary-color-text">Details</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-4 margin-bottom-10">
+                    <div class="card text-white">
+                        <div class="img mx-auto row align-items-center" style="height: 300px;width:auto;">
+                            <img class="col card-img-top mh-100 width-auto" src="assets/scissorsExampe.PNG"
+                                 alt="Card image cap">
+                        </div>
+                        <div class="card-body bg-dark">
+                            <h4 class="card-title primary-color-text">Item Name</h4>
+                            <p class="card-text text-truncate" style="height: 4rem;">Some Explainationome
+                                ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome
+                                Explainationome ExplainationSome Explainationome ExplainationSome Explainationome
+                                ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome
+                                Explainationome ExplainationSome Explainationome ExplainationSome Explainationome
+                                ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome
+                                Explainationome ExplainationSome Explainationome ExplainationSome Explainationome
+                                Explaination</p>
+                            <div class="card-footer float-right bg-transparent no-border no-top-padding no-bottom-padding">
+                                <a href="#" class="btn primary-color-text">Details</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <div class="col-sm-12 col-md-6 col-lg-4 margin-bottom-10">
+                    <div class="card text-white">
+                        <div class="img mx-auto row align-items-center" style="height: 300px;width:auto;">
+                            <img class="col card-img-top mh-100 width-auto" src="assets/scissorsExampe.PNG"
+                                 alt="Card image cap">
+                        </div>
+                        <div class="card-body bg-dark">
+                            <h4 class="card-title primary-color-text">Item Name</h4>
+                            <p class="card-text text-truncate" style="height: 4rem;">Some Explainationome
+                                ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome
+                                Explainationome ExplainationSome Explainationome ExplainationSome Explainationome
+                                ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome
+                                Explainationome ExplainationSome Explainationome ExplainationSome Explainationome
+                                ExplainationSome Explainationome ExplainationSome Explainationome ExplainationSome
+                                Explainationome ExplainationSome Explainationome ExplainationSome Explainationome
+                                Explaination</p>
+                            <div class="card-footer float-right bg-transparent no-border no-top-padding no-bottom-padding">
+                                <a href="#" class="btn primary-color-text">Details</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="modals-container">
+        <div id="myModal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog"
+             aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content padding-16">
+                    <div class="row padding-bottom-10">
+                        <div class="col-sm-3 align-content-center">
+                            <div class="img mx-auto row align-items-center" style="height: 80%;width:auto;">
+                                <img id="modal-image" class="col card-img-top mh-100 width-auto img-thumbnail" src="assets/scissorsExampe.PNG"
+                                     alt="Card image cap">
+                            </div>
+                        </div>
+                        <div class="col-sm-9">
+                            <h1 class="display-4">Item Name</h1>
+                            <small class="text-secondary"> Category > Subcategory</small>
+                            <p class="lead">
+                                Message of text about the itemMessage of text about the item
+                                Message of text about the itemMessage of text about the item
+                            </p>
+                            <div class="row w-50 padding-left-12">
+
+                                <select class="form-control form-control-lg padding-bottom-10" id="measurement-select"
+                                        style="height: calc(2.875rem + 8px);">
+                                    <option>1.2 inches</option>
+                                    <option>4.2 inches</option>
+                                    <option>5.2 inches</option>
+                                    <option>6.2 inches</option>
+                                </select>
+
+                                <p id="item-price" class="h4 padding-top-10 primary-color-text">$4.21</p>
+
+                            </div>
+
+                        </div>
+
+
+
+
+
+
+
+
+                    </div>
+
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn primary-color text-white" onclick="approveUser('userID');">Add</button>
+                    </div>
                 </div>
             </div>
         </div>
 
     </div>
-    <div class="no-margin no-border bg-dark">
-        <div class="bg-dark text-right no-margin">
-            <p class=" bg-dark no-margin padding-16"><a class="text-info" href="./admin-login.html">Admin Login</a> </p>
+
+
+    <footer class="bg-dark no-margin">
+        <div class="jumbotron bg-dark no-margin text-white">
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-sm-12 col-md-4">
+                        <h6>About</h6>
+                        <p class="h6">
+                        <ul class="list-unstyled">
+                            <li>Lorem ipsum dolor sit amet</li>
+                            <li>Consectetur adipiscing elit</li>
+                            <li>Integer molestie lorem at massa</li>
+                        </ul>
+                        </p>
+                    </div>
+
+
+                    <div class="col-sm-12 col-md-4">
+                        <h6>Prodcuts</h6>
+                        <p class="h6">
+                        <ul class="list-unstyled">
+                            <li>Lorem ipsum dolor sit amet</li>
+                            <li>Consectetur adipiscing elit</li>
+                            <li>Integer molestie lorem at massa</li>
+                        </ul>
+                        </p>
+                    </div>
+
+
+                    <div class="col-sm-12 col-md-4">
+                        <h6>Legal</h6>
+                        <p class="h6">
+                        <ul class="list-unstyled">
+                            <li>Lorem ipsum dolor sit amet</li>
+                            <li>Consectetur adipiscing elit</li>
+                            <li>Integer molestie lorem at massa</li>
+                        </ul>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
         </div>
-    </div>
+        <div class="no-margin no-border bg-dark">
+            <div class="bg-dark text-right no-margin">
+                <p class=" bg-dark no-margin padding-16"><a class="text-info" href="./admin-login.html">Admin Login</a>
+                </p>
+            </div>
+        </div>
 
-</footer>
+    </footer>
 
 
-
-<script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
-        integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
-        crossorigin="anonymous"></script>
-<script src="js/bootstrap.min.js"
-        integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
-        crossorigin="anonymous"></script>
-<script src="js/base.js"></script>
-<script src="js/catalog.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+            integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+            crossorigin="anonymous"></script>
+    <script src="js/bootstrap.min.js"
+            integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+            crossorigin="anonymous"></script>
+    <script src="js/base.js"></script>
+    <script src="js/catalog.js"></script>
 </body>
 </html>
