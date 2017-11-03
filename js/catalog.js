@@ -54,10 +54,10 @@ $(document).ready(function () {
     loadCategories();
     loadItemListener();
     InitializeListeners();
-    // $('#myModal').modal({
-    //     keyboard: false
-    // })
-    // $('#myModal').modal('show');
+    $('#myModal').modal({
+        keyboard: false
+    })
+    $('#myModal').modal('show');
 });
 
 
