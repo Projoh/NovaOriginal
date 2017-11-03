@@ -1,11 +1,7 @@
 function initializeAuthListener() {
     firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
-            if (!newUser) {
-                window.location.href = "catalog.html";
-            } else {
-                createNewUser(user.uid);
-            }
+
         }
     });
 }
@@ -38,15 +34,24 @@ function openLoginModal() {
     $('#loginModal').modal('show');
 }
 
+function presentString(title) {
+    return title.replace("_", " ");
+}
 
+function unpresentString(title) {
+    return title.replace(" ", "_").toLowerCase();
+}
 
 var database = firebase.database();
 var allItems = [];
+var allCategories = [];
 var lastItem;
+
 
 $(document).ready(function () {
     console.log("Initialized!");
     initializeAuthListener();
+    loadCategories();
     loadItemListener();
     InitializeListeners();
     // $('#myModal').modal({
@@ -56,6 +61,20 @@ $(document).ready(function () {
 });
 
 
+function showSubCategories(categoryID) {
+    var subCategoriesContainer = $("#subcategories-select");
+    subCategoriesContainer.html("");
+
+    var subCategoryHTML = "<option>Sub-Categories</option>";
+    if(categoryID in allCategories){
+        for(var subCategoryID in allCategories[categoryID].subCategories) {
+            subCategoryHTML += "<option>" + presentString(subCategoryID) + "</option>";
+        }
+    }
+
+    subCategoriesContainer.html(subCategoryHTML);
+}
+
 function InitializeListeners() {
 
     $('#search-catalog').on('input', function(){
@@ -63,13 +82,21 @@ function InitializeListeners() {
         var searchText = $('#search-catalog').val();
 
         showProgressBar();
-        $('#categories-select').prop('selectedIndex',0);
-        $('#subcategories-select').prop('selectedIndex',0);
+        resetCategories();
         loadItemListener(searchText.toUpperCase());
+
+        function resetCategories(){
+
+            $('#categories-select').prop('selectedIndex',0);
+            $('#subcategories-select').prop('selectedIndex',0);
+            $('#subcategories-select').html("<option>Sub-Categories</option>");
+        }
     });
 
     $( "#categories-select" ).change(function() {
+        var selectedCategory = $('#categories-select').find(":selected").text();
         showProgressBar();
+        showSubCategories(unpresentString(selectedCategory));
         loadItemListener();
     });
 
@@ -82,6 +109,38 @@ function InitializeListeners() {
 function showAllItems() {
 
 }
+
+function loadCategories() {
+    var categoriesRef = database.ref('/categories');
+
+
+    categoriesRef.once('value').then(function (snapshot) {
+        var categoriesData = snapshot.val();
+        $.each(categoriesData, function(categoriesID, categoriesObject) {
+            var category = new Category();
+            category.name = categoriesID;
+            if(!("no_sub_cat" in categoriesObject)) {
+                category.subCategories = categoriesObject;
+            }
+            allCategories[categoriesID] = category;
+        });
+
+        updateCategories();
+    });
+
+    function updateCategories() {
+        var categoriesContainer = $("#categories-select");
+        categoriesContainer.html("");
+
+        var categoryHTML = "<option>Categories</option>";
+        for(var categoryID in allCategories) {
+            var category = allCategories[categoryID];
+            categoryHTML += "<option>" + presentString(category.name) + "</option>";
+        }
+        categoriesContainer.html(categoryHTML);
+    }
+}
+
 
 // This function modifies a common item reference based on the filtering requirements
 function loadItemListener(searchText) {
@@ -96,9 +155,9 @@ function loadItemListener(searchText) {
         searchWithText();
     } else{
         if(category){
-            if(subcategory) { // If sub exists
+            if(subcategory) {
                 itemRef = itemRef.orderByChild("cat_sub").equalTo(category + " " + subcategory);
-            } else {
+            } else { // If a category is selected but a subcategory isnt
                 itemRef = itemRef.orderByChild("category").equalTo(category);
             }
         } else { // If no filtering has happened
@@ -116,9 +175,9 @@ function loadItemListener(searchText) {
     }
 
     function parseItemSnapShot(snapshot, dontShowChanges) {
-        lastItem = snapshot.key;
         var itemsData = snapshot.val();
         $.each(itemsData, function(itemID, itemObject) {
+            lastItem = itemID;
             var item = new Item();
             item.id = itemID;
             item.itemID = itemObject["id"];
@@ -126,6 +185,7 @@ function loadItemListener(searchText) {
             item.image = itemObject["image"];
             item.category = itemObject["category"];
             item.description = itemObject["description"];
+            item.measurements = itemObject["measurement"];
 
             Object.keys(item).forEach(function(key,index) {
                 if(item[key] == undefined){
@@ -197,4 +257,9 @@ function Item() {
     this.subcategory = "";
     this.measurements = []; // Measurement: price
     this.description = "";
+}
+
+function Category() {
+    this.name = "";
+    this.subCategories = [];
 }
