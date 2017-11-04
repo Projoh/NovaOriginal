@@ -34,11 +34,11 @@ function openLoginModal() {
     $('#loginModal').modal('show');
 }
 
-function presentString(title) {
+function presentCategoryText(title) {
     return title.replace("_", " ");
 }
 
-function unpresentString(title) {
+function unpresentCategoryText(title) {
     return title.replace(" ", "_").toLowerCase();
 }
 
@@ -54,10 +54,10 @@ $(document).ready(function () {
     loadCategories();
     loadItemListener();
     InitializeListeners();
-    $('#myModal').modal({
-        keyboard: false
-    })
-    $('#myModal').modal('show');
+    // $('#myModal').modal({
+    //     keyboard: false
+    // })
+    // $('#myModal').modal('show');
 });
 
 
@@ -68,7 +68,7 @@ function showSubCategories(categoryID) {
     var subCategoryHTML = "<option>Sub-Categories</option>";
     if(categoryID in allCategories){
         for(var subCategoryID in allCategories[categoryID].subCategories) {
-            subCategoryHTML += "<option>" + presentString(subCategoryID) + "</option>";
+            subCategoryHTML += "<option>" + presentCategoryText(subCategoryID) + "</option>";
         }
     }
 
@@ -83,7 +83,7 @@ function InitializeListeners() {
 
         showProgressBar();
         resetCategories();
-        loadItemListener(searchText.toUpperCase());
+        loadItemListener(searchText);
 
         function resetCategories(){
 
@@ -96,7 +96,7 @@ function InitializeListeners() {
     $( "#categories-select" ).change(function() {
         var selectedCategory = $('#categories-select').find(":selected").text();
         showProgressBar();
-        showSubCategories(unpresentString(selectedCategory));
+        showSubCategories(unpresentCategoryText(selectedCategory));
         loadItemListener();
     });
 
@@ -107,6 +107,149 @@ function InitializeListeners() {
 }
 
 function showAllItems() {
+    var container = $('#items-container');
+    var HTML = "";
+    for(var itemID in allItems) {
+        var item = allItems[itemID];
+        HTML += "                <div id=\"";
+        HTML += item.id;
+        HTML += "\" class=\"col-sm-12 col-md-6 col-lg-4 margin-bottom-10\" onclick=\"showItemModal('";
+        HTML += item.id;
+        HTML += "');\">";
+        HTML += "                    <div class=\"card text-white\">";
+        HTML += "                        <div class=\"img mx-auto row align-items-center\" style=\"height: 300px;width:auto;\">";
+        HTML += "                            <img class=\"col card-img-top mh-100 width-auto\" src=\"assets\/scissorsExampe.PNG\"";
+        HTML += "                                 alt=\"Image of the specified item\">";
+        HTML += "                        <\/div>";
+        HTML += "                        <div class=\"card-body bg-dark\">";
+        HTML += "                            <h4 class=\"card-title primary-color-text capitalize\">";
+        HTML +=  item.name;
+        HTML += "<\/h4>";
+        HTML += "                            <p class=\"card-text text-truncate\" style=\"height: 4rem;\">";
+        HTML += item.description;
+        HTML += "                            <\/p>";
+        HTML += "                            <div class=\"card-footer float-right bg-transparent no-border no-top-padding no-bottom-padding\">";
+        HTML += "                                <a href=\"#\" class=\"btn primary-color-text\">Details<\/a>";
+        HTML += "                            <\/div>";
+        HTML += "                        <\/div>";
+        HTML += "";
+        HTML += "                    <\/div>";
+        HTML += "                <\/div>";
+    }
+    container.append(HTML);
+}
+
+function intializeModalSelectorListener(itemID) {
+    var measurement_selector = $('#measurement-select');
+    measurement_selector.off("change");
+
+    measurement_selector.change(function() {
+        var item = allItems[itemID];
+        var price_container = $('#item-price');
+        var selected_item = measurement_selector.find(":selected");
+        var selectedExt = selected_item.attr('id');
+
+        var priceOfSelected = item.measurements[selectedExt].price;
+        price_container.html(priceOfSelected);
+    });
+}
+
+function showItemModal(itemID) {
+    var item = allItems[itemID];
+    var modalContainer = $('.modals-container');
+
+
+
+    modalContainer.html("");
+    createModal();
+    initalizeModal();
+    intializeModalSelectorListener(item.id);
+
+
+    function FirstPrice() {
+        for(var measurementID in item.measurements) {
+            var measurementObject = item.measurements[measurementID];
+            this.firstItemID = measurementID;
+            this.price =  measurementObject["price"];
+            break;
+        }
+    };
+    function createModal() {
+        var firstPrice = new FirstPrice();
+        var measurementsHTML =  function () {
+            var measurementHTML = "";
+            for(var measurementID in item.measurements) {
+                var measurementValue = item.measurements[measurementID];
+                measurementHTML += "<option id=\"" + measurementID  + "\" value=\"" + measurementValue["dimension"] + "\">" + measurementValue["dimension"] +  " " + item.unit +"</option>";
+            }
+            return measurementHTML;
+        };
+        var modalHTML = "";
+        modalHTML += "<div id=\"itemModal\" class=\"modal fade bd-example-modal-lg\" tabindex=\"-1\" role=\"dialog\"";
+        modalHTML += "             aria-labelledby=\"myLargeModalLabel\" aria-hidden=\"true\">";
+        modalHTML += "            <div class=\"modal-dialog modal-lg\">";
+        modalHTML += "                <div class=\"modal-content padding-16\">";
+        modalHTML += "                    <div class=\"row padding-bottom-10 padding-left-12 padding-top-10\">";
+        modalHTML += "                        <div class=\"col-sm-3 align-content-center\">";
+        modalHTML += "                            <div class=\"img mx-auto row align-items-center\" style=\"height: 80%;width:auto;\">";
+        modalHTML += "                                <img id=\"modal-image\" class=\"col card-img-top mh-100 width-auto img-thumbnail\" src=\"assets\/moutAndToungeExample.PNG\"";
+        modalHTML += "                                     alt=\"Image for item\">";
+        modalHTML += "";
+        modalHTML += "                            <\/div>";
+        modalHTML += "                            <p id=\"item-price\" class=\"h4 padding-top-10 primary-color-text \">";
+        modalHTML += firstPrice.price;
+        modalHTML += "<\/p>";
+        modalHTML += "";
+        modalHTML += "                        <\/div>";
+        modalHTML += "                        <div class=\"col-sm-9\">";
+        modalHTML += "                            <h1 class=\"display-4 capitalize\">" +
+            item.name +
+            "<\/h1>";
+        modalHTML += "                            <small class=\"text-secondary capitalize\"> ";
+        modalHTML += item.category;
+        modalHTML += " > ";
+        modalHTML += item.subcategory;
+        modalHTML += "<\/small>";
+        modalHTML += "                            <p class=\"lead\">";
+        modalHTML += item.description;
+        modalHTML += "                            <\/p>";
+        modalHTML += "                            <div class=\"row w-50 padding-left-12\">";
+        modalHTML += "";
+        modalHTML += "                                <select class=\"form-control form-control-lg padding-bottom-10\" id=\"measurement-select\"";
+        modalHTML += "                                        style=\"height: calc(2.875rem + 8px);\">";
+        modalHTML += measurementsHTML();
+        modalHTML += "                                <\/select>";
+        modalHTML += "";
+        modalHTML += "";
+        modalHTML += "                            <\/div>";
+        modalHTML += "";
+        modalHTML += "                        <\/div>";
+        modalHTML += "";
+        modalHTML += "                    <\/div>";
+        modalHTML += "";
+        modalHTML += "";
+        modalHTML += "                    <div class=\"modal-footer\">";
+        modalHTML += "                        <button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\">Cancel<\/button>";
+        modalHTML += "                        <button type=\"button\" class=\"btn primary-color text-white\" onclick=\"addItemToCart('";
+        modalHTML += item.id;
+        modalHTML += "','";
+        modalHTML += firstPrice.firstItemID;
+        modalHTML += "');\">Add<\/button>";
+        modalHTML += "                    <\/div>";
+        modalHTML += "                <\/div>";
+        modalHTML += "            <\/div>";
+        modalHTML += "        <\/div>";
+        modalContainer.html(modalHTML);
+    }
+    function initalizeModal() {
+        $('#itemModal').modal({
+            keyboard: false
+        })
+        $('#itemModal').modal('show');
+    }
+}
+
+function addItemToCart(itemID, extensionSelected) {
 
 }
 
@@ -135,7 +278,7 @@ function loadCategories() {
         var categoryHTML = "<option>Categories</option>";
         for(var categoryID in allCategories) {
             var category = allCategories[categoryID];
-            categoryHTML += "<option>" + presentString(category.name) + "</option>";
+            categoryHTML += "<option>" + presentCategoryText(category.name) + "</option>";
         }
         categoriesContainer.html(categoryHTML);
     }
@@ -152,6 +295,7 @@ function loadItemListener(searchText) {
 
 
     if(searchText){
+        searchText = searchText.toLowerCase();
         searchWithText();
     } else{
         if(category){
@@ -184,7 +328,9 @@ function loadItemListener(searchText) {
             item.name = itemObject["name"];
             item.image = itemObject["image"];
             item.category = itemObject["category"];
+            item.subcategory = itemObject["subcategory"];
             item.description = itemObject["description"];
+            item.unit = itemObject["unit"];
             item.measurements = itemObject["measurement"];
 
             Object.keys(item).forEach(function(key,index) {
@@ -193,11 +339,12 @@ function loadItemListener(searchText) {
                 }
             });
             allItems[itemID] = item;
-            hideProgressBar();
-            if(!dontShowChanges){
-                showAllItems();
-            }
+
         });
+        hideProgressBar();
+        if(!dontShowChanges){
+            showAllItems();
+        }
         if(!itemsData) {
             hideProgressBar();
         }
@@ -254,6 +401,7 @@ function Item() {
     this.image = "";
     this.imageURL = [];
     this.category = "";
+    this.unit = "";
     this.subcategory = "";
     this.measurements = []; // Measurement: price
     this.description = "";
