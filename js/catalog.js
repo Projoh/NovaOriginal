@@ -42,10 +42,11 @@ function unpresentCategoryText(title) {
 }
 
 var database = firebase.database();
+var storageRef = firebase.storage().ref();
 var allItems = [];
 var allCategories = [];
 var lastItem;
-
+var itemImages = [];
 
 $(document).ready(function () {
     console.log("Initialized!");
@@ -121,7 +122,7 @@ function showAllItems() {
         HTML += "');\">";
         HTML += "                    <div class=\"card text-white\">";
         HTML += "                        <div class=\"img mx-auto row align-items-center\" style=\"height: 300px;width:auto;\">";
-        HTML += "                            <img class=\"col card-img-top mh-100 width-auto\" src=\"assets\/scissorsExampe.PNG\"";
+        HTML += "                            <img id=\"img-" + item.id +"\" class=\"col card-img-top mh-100 width-auto\" src=\"assets\/scissorsExampe.PNG\"";
         HTML += "                                 alt=\"Image of the specified item\">";
         HTML += "                        <\/div>";
         HTML += "                        <div class=\"card-body bg-dark\">";
@@ -321,6 +322,8 @@ function loadItemListener(searchText) {
         });
     }
 
+
+
     function parseItemSnapShot(snapshot, dontShowChanges) {
         var itemsData = snapshot.val();
         $.each(itemsData, function(itemID, itemObject) {
@@ -351,7 +354,40 @@ function loadItemListener(searchText) {
         if(!itemsData) {
             hideProgressBar();
         }
+        loadPreLoadedItemImages();
+        loadItemImages();
+    }
 
+    function loadPreLoadedItemImages(){
+        for(var itemID in allItems) {
+            var img = document.getElementById('img-'+itemID);
+            if(itemImages[itemID]){
+                img.src = itemImages[itemID];
+            } else {
+                img.src = "./assets/scissorsExampe.PNG";
+            }
+        }
+    }
+
+    function loadItemImages() {
+        for(var itemID in allItems) {
+            if(!itemImages[itemID]){
+                performTask(itemID);
+            }
+        }
+    }
+
+    function performTask(itemID) {
+        var item = allItems[itemID];
+        storageRef.child('catalog/'+itemID+'/'+item.image).getDownloadURL().then(function(url) {
+            var img = document.getElementById('img-'+itemID);
+            img.src = url;
+            itemImages[itemID] = url;
+            hideProgressBar();
+        }).catch(function(error) {
+            console.log(error.message);
+            hideProgressBar();
+        });
     }
 
 
@@ -383,8 +419,8 @@ function loadItemListener(searchText) {
 
 
     function readCategoriesData() {
-        category = (category == "Categories") ? null : category.toUpperCase();
-        subcategory = (subcategory == "Sub-Categories") ? null : subcategory.toUpperCase();
+        category = (category == "Categories") ? null : unpresentCategoryText(category);
+        subcategory = (subcategory == "Sub-Categories") ? null : unpresentCategoryText(subcategory);
     }
 
 }
@@ -402,7 +438,6 @@ function Item() {
     this.itemID = "";
     this.name = "";
     this.image = "";
-    this.imageURL = [];
     this.category = "";
     this.unit = "";
     this.subcategory = "";

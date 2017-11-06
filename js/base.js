@@ -58,7 +58,7 @@ var config = {
     authDomain: "nova-medical-technologies.firebaseapp.com",
     databaseURL: "https://nova-medical-technologies.firebaseio.com",
     projectId: "nova-medical-technologies",
-    storageBucket: "",
+    storageBucket: "gs://nova-medical-technologies.appspot.com",
     messagingSenderId: "315237263721"
 };
 firebase.initializeApp(config);
