@@ -6,24 +6,23 @@ function initializeAuthListener() {
     });
 }
 function showProgressBar() {
-    var progressBar = $('#progress-bar');
-
-    progressBar.parent().removeClass('gone');
-    progressBar.animate({
-        width: "100%"
-    }, 5000, function () {
-        progressBar.addClass('bg-danger');
-    });
-
+    // var progressBar = $('#progress-bar');
+    //
+    // progressBar.parent().removeClass('gone');
+    // progressBar.animate({
+    //     width: "100%"
+    // }, 400);
+    $('#loading-text').removeClass('invisible');
 }
 
 function hideProgressBar() {
-    var progressBar = $('#progress-bar');
+    // var progressBar = $('#progress-bar');
+    //
+    // progressBar.parent().addClass('gone');
+    //
+    // progressBar.width(0);
 
-    progressBar.parent().addClass('gone');
-
-    progressBar.removeClass('bg-danger');
-    progressBar.width(0);
+    $('#loading-text').addClass('invisible');
 }
 
 function openLoginModal() {
@@ -80,7 +79,7 @@ function InitializeListeners() {
     $('#search-catalog').on('input', function(){
 
         var searchText = $('#search-catalog').val();
-
+        lastItem = null;
         showProgressBar();
         resetCategories();
         loadItemListener(searchText);
@@ -95,12 +94,16 @@ function InitializeListeners() {
 
     $( "#categories-select" ).change(function() {
         var selectedCategory = $('#categories-select').find(":selected").text();
+
+        lastItem = null;
         showProgressBar();
         showSubCategories(unpresentCategoryText(selectedCategory));
         loadItemListener();
     });
 
     $( "#subcategories-select").change(function() {
+
+        lastItem = null;
         showProgressBar();
         loadItemListener();
     });
@@ -136,7 +139,7 @@ function showAllItems() {
         HTML += "                    <\/div>";
         HTML += "                <\/div>";
     }
-    container.append(HTML);
+    container.html(HTML);
 }
 
 function intializeModalSelectorListener(itemID) {
@@ -380,8 +383,8 @@ function loadItemListener(searchText) {
 
 
     function readCategoriesData() {
-        category = (category == "Categories") ? null : category;
-        subcategory = (subcategory == "Sub-Categories") ? null : subcategory;
+        category = (category == "Categories") ? null : category.toUpperCase();
+        subcategory = (subcategory == "Sub-Categories") ? null : subcategory.toUpperCase();
     }
 
 }
