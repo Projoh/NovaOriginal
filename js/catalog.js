@@ -135,7 +135,7 @@ function showAllItems() {
         HTML += "');\">";
         HTML += "                    <div class=\"card text-white\">";
         HTML += "                        <div class=\"img mx-auto row align-items-center\" style=\"height: 300px;width:auto;\">";
-        HTML += "                            <img id=\"img-" + item.id +"\" class=\"col card-img-top mh-100 width-auto\" src=\"assets\/scissorsExampe.PNG\"";
+        HTML += "                            <img id=\"img-" + item.id +"\" class=\"col card-img-top mh-100 width-auto\" src=\"assets\/noimage.png\"";
         HTML += "                                 alt=\"Image of the specified item\">";
         HTML += "                        <\/div>";
         HTML += "                        <div class=\"card-body bg-dark\">";
@@ -146,7 +146,7 @@ function showAllItems() {
         HTML += item.description;
         HTML += "                            <\/p>";
         HTML += "                            <div class=\"card-footer float-right bg-transparent no-border no-top-padding no-bottom-padding\">";
-        HTML += "                                <a href=\"#\" class=\"btn primary-color-text\">Details<\/a>";
+        HTML += "                                <a href=\"javascript:;\" class=\"btn primary-color-text\">Details<\/a>";
         HTML += "                            <\/div>";
         HTML += "                        <\/div>";
         HTML += "";
@@ -214,17 +214,20 @@ function showItemModal(itemID) {
             return measurementHTML;
         };
         var modalHTML = "";
+        var imageSrc = (itemImages[itemID]) ? itemImages[itemID] : "assets\/noimage.png";
         var priceText = (approved) ? firstPrice.price : (currentUser) ?
-            "We will contact you soon to enable visibility" :
-            "<a class=\"text-info\" href=\".\/register.html\">Register to view prices!<\/a>";
+            "Verification in progress" :
+            "<a class=\"text-info\" href=\".\/register.html\">View Price<\/a>";
         modalHTML += "<div id=\"itemModal\" class=\"modal fade bd-example-modal-lg\" tabindex=\"-1\" role=\"dialog\"";
         modalHTML += "             aria-labelledby=\"myLargeModalLabel\" aria-hidden=\"true\">";
         modalHTML += "            <div class=\"modal-dialog modal-lg\">";
         modalHTML += "                <div class=\"modal-content padding-16\">";
         modalHTML += "                    <div class=\"row padding-bottom-10 padding-left-12 padding-top-10\">";
         modalHTML += "                        <div class=\"col-sm-3 align-content-center\">";
-        modalHTML += "                            <div class=\"img mx-auto row align-items-center\" style=\"height: 80%;width:auto;\">";
-        modalHTML += "                                <img id=\"modal-image\" class=\"col card-img-top mh-100 width-auto img-thumbnail\" src=\"assets\/moutAndToungeExample.PNG\"";
+        modalHTML += "                            <div class=\"img mx-auto row align-items-center\" style=\"height: 70%;width:auto;\">";
+        modalHTML += "                                <img id=\"modal-image\" class=\"col card-img-top mh-100 width-auto img-thumbnail\" src=\"" +
+            imageSrc +
+            "\"";
         modalHTML += "                                     alt=\"Image for item\">";
         modalHTML += "";
         modalHTML += "                            <\/div>";
@@ -238,9 +241,9 @@ function showItemModal(itemID) {
             item.name +
             "<\/h1>";
         modalHTML += "                            <small class=\"text-secondary capitalize\"> ";
-        modalHTML += item.category;
+        modalHTML += presentCategoryText(item.category);
         modalHTML += " > ";
-        modalHTML += item.subcategory;
+        modalHTML += presentCategoryText(item.subcategory);
         modalHTML += "<\/small>";
         modalHTML += "                            <p class=\"lead\">";
         modalHTML += item.description;
@@ -366,7 +369,21 @@ function loadItems(searchText) {
             item.subcategory = itemObject["subcategory"];
             item.description = itemObject["description"];
             item.unit = itemObject["unit"];
-            item.measurements = itemObject["measurement"];
+            var measurementObjects = itemObject["measurement"];
+
+            for(var measurmentObID in measurementObjects) {
+                var measureOb = measurementObjects[measurmentObID];
+                var measurement = new Measurement();
+                measurement.id = measurmentObID;
+                measurement.dimension = measureOb["dimension"];
+                measurement.price = measureOb["price"];
+                item.measurements.push(measurement);
+            }
+
+
+            item.measurements.sort(function (a, b) {
+                return a.dimension - b.dimension;
+            });
 
             Object.keys(item).forEach(function(key,index) {
                 if(item[key] == undefined){
@@ -393,7 +410,7 @@ function loadItems(searchText) {
             if(itemImages[itemID]){
                 img.src = itemImages[itemID];
             } else {
-                img.src = "./assets/scissorsExampe.PNG";
+                img.src = "./assets/noimage.png";
             }
         }
     }
@@ -477,4 +494,10 @@ function Item() {
 function Category() {
     this.name = "";
     this.subCategories = [];
+}
+
+function Measurement() {
+    this.id = "";
+    this.price = ""
+    this.dimension = 0;
 }
