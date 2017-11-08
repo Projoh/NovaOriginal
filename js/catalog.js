@@ -47,12 +47,13 @@ var allItems = [];
 var allCategories = [];
 var lastItem;
 var itemImages = [];
+var approvedUsers = [];
 
 $(document).ready(function () {
     console.log("Initialized!");
     initializeAuthListener();
     loadCategories();
-    loadItemListener();
+    loadItems();
     InitializeListeners();
     // $('#myModal').modal({
     //     keyboard: false
@@ -60,6 +61,18 @@ $(document).ready(function () {
     // $('#myModal').modal('show');
 });
 
+
+function pullApprovedUsers() {
+    var approvedUsersRef = database.ref('/approved_users/');
+
+    approvedUsersRef.once('value').then(function(snapshot) {
+        approvedUsers = [];
+        var approvedUsersData = snapshot.val();
+        $.each(approvedUsersData, function(approvedID, approvedVal) {
+            approvedUsers[approvedID] = true;
+        });
+    });
+}
 
 function showSubCategories(categoryID) {
     var subCategoriesContainer = $("#subcategories-select");
@@ -83,7 +96,7 @@ function InitializeListeners() {
         lastItem = null;
         showProgressBar();
         resetCategories();
-        loadItemListener(searchText);
+        loadItems(searchText);
 
         function resetCategories(){
 
@@ -99,14 +112,14 @@ function InitializeListeners() {
         lastItem = null;
         showProgressBar();
         showSubCategories(unpresentCategoryText(selectedCategory));
-        loadItemListener();
+        loadItems();
     });
 
     $( "#subcategories-select").change(function() {
 
         lastItem = null;
         showProgressBar();
-        loadItemListener();
+        loadItems();
     });
 }
 
@@ -148,19 +161,31 @@ function intializeModalSelectorListener(itemID) {
     measurement_selector.off("change");
 
     measurement_selector.change(function() {
-        var item = allItems[itemID];
-        var price_container = $('#item-price');
-        var selected_item = measurement_selector.find(":selected");
-        var selectedExt = selected_item.attr('id');
+        var currentUser =  firebase.auth().currentUser;
+        var approved = (currentUser) ? (currentUser.uid in approvedUsers) : false;
 
-        var priceOfSelected = item.measurements[selectedExt].price;
-        price_container.html(priceOfSelected);
+
+        if(approved) {
+            changePrice();
+        }
+
+        function changePrice() {
+            var item = allItems[itemID];
+            var price_container = $('#item-price');
+            var selected_item = measurement_selector.find(":selected");
+            var selectedExt = selected_item.attr('id');
+
+            var priceOfSelected = item.measurements[selectedExt].price;
+            price_container.html(priceOfSelected);
+        }
     });
 }
 
 function showItemModal(itemID) {
     var item = allItems[itemID];
     var modalContainer = $('.modals-container');
+    var currentUser =  firebase.auth().currentUser;
+    var approved = (currentUser) ? (currentUser.uid in approvedUsers) : false;
 
 
 
@@ -189,6 +214,9 @@ function showItemModal(itemID) {
             return measurementHTML;
         };
         var modalHTML = "";
+        var priceText = (approved) ? firstPrice.price : (currentUser) ?
+            "We will contact you soon to enable visibility" :
+            "<a class=\"text-info\" href=\".\/register.html\">Register to view prices!<\/a>";
         modalHTML += "<div id=\"itemModal\" class=\"modal fade bd-example-modal-lg\" tabindex=\"-1\" role=\"dialog\"";
         modalHTML += "             aria-labelledby=\"myLargeModalLabel\" aria-hidden=\"true\">";
         modalHTML += "            <div class=\"modal-dialog modal-lg\">";
@@ -201,7 +229,7 @@ function showItemModal(itemID) {
         modalHTML += "";
         modalHTML += "                            <\/div>";
         modalHTML += "                            <p id=\"item-price\" class=\"h4 padding-top-10 primary-color-text \">";
-        modalHTML += firstPrice.price;
+        modalHTML += priceText;
         modalHTML += "<\/p>";
         modalHTML += "";
         modalHTML += "                        <\/div>";
@@ -290,7 +318,7 @@ function loadCategories() {
 
 
 // This function modifies a common item reference based on the filtering requirements
-function loadItemListener(searchText) {
+function loadItems(searchText) {
     var itemRef = database.ref('/catalog/');
 
     var category = $('#categories-select').find(":selected").text();
@@ -322,6 +350,7 @@ function loadItemListener(searchText) {
         });
     }
 
+    pullApprovedUsers();
 
 
     function parseItemSnapShot(snapshot, dontShowChanges) {
@@ -429,7 +458,7 @@ function nextPage(){
     var searchText = $('#search-catalog').val();
     searchText = (searchText) ? searchText : null;
 
-    loadItemListener(searchText);
+    loadItems(searchText);
 }
 
 
