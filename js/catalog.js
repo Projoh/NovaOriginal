@@ -322,7 +322,7 @@ function loadCategories() {
 
 // This function modifies a common item reference based on the filtering requirements
 function loadItems(searchText) {
-    var itemRef = database.ref('/catalog/');
+    catalogRef = database.ref('/catalog/');
 
     var category = $('#categories-select').find(":selected").text();
     var subcategory = $('#subcategories-select').find(":selected").text();
@@ -335,20 +335,20 @@ function loadItems(searchText) {
     } else{
         if(category){
             if(subcategory) {
-                itemRef = itemRef.orderByChild("cat_sub").equalTo(category + " " + subcategory);
+                catalogRef = catalogRef.orderByChild("cat_sub").equalTo(category + " " + subcategory);
             } else { // If a category is selected but a subcategory isnt
-                itemRef = itemRef.orderByChild("category").equalTo(category);
+                catalogRef = catalogRef.orderByChild("category").equalTo(category);
             }
         } else { // If no filtering has happened
             if(!lastItem){
-                itemRef = itemRef.limitToFirst(25);
+                catalogRef = catalogRef.limitToFirst(25);
             } else {
-                itemRef = itemRef.orderByKey().startAt(lastItem).limitToFirst(25);
+                catalogRef = catalogRef.orderByKey().startAt(lastItem).limitToFirst(25);
             }
         }
 
         allItems = [];
-        itemRef.once('value').then(function(snapshot) {
+        catalogRef.once('value').then(function(snapshot) {
             parseItemSnapShot(snapshot);
         });
     }
@@ -438,13 +438,13 @@ function loadItems(searchText) {
 
 
     function searchWithText() {
-        var searchCategory = itemRef.orderByChild('category')
+        var searchCategory = catalogRef.orderByChild('category')
             .startAt(searchText)
             .endAt(searchText+"\uf8ff");
-        var searchName = itemRef.orderByChild('name')
+        var searchName = catalogRef.orderByChild('name')
             .startAt(searchText)
             .endAt(searchText+"\uf8ff");
-        var searchSubCategory = itemRef.orderByChild('subcategory')
+        var searchSubCategory = catalogRef.orderByChild('subcategory')
             .startAt(searchText)
             .endAt(searchText+"\uf8ff");
 
@@ -476,6 +476,7 @@ function nextPage(){
     searchText = (searchText) ? searchText : null;
 
     loadItems(searchText);
+    $("html, body").animate({ scrollTop: 100 }, "slow");
 }
 
 

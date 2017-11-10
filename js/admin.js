@@ -8,7 +8,6 @@ function initializeAuthListener() {
         window.location.href = "index.html";
     });
 }
-
 function logOut() {
     firebase.auth().signOut().then(function() {
         // Sign-out successful.
@@ -16,47 +15,43 @@ function logOut() {
         // An error happened.
     });
 }
-
 function showProgressBar() {
-    var progressBar = $('#progress-bar');
-
-    progressBar.parent().removeClass('gone');
-    progressBar.animate({
-        width: "100%"
-    }, 5000, function () {
-        progressBar.addClass('bg-danger');
-    });
-
+    $('#loading-text').removeClass('invisible');
 }
-
 function hideProgressBar() {
-    var progressBar = $('#progress-bar');
-
-    progressBar.parent().addClass('gone');
-
-    progressBar.removeClass('bg-danger');
-    progressBar.width(0);
+    $('#loading-text').addClass('invisible');
 }
+function presentCategoryText(title) {
+    return title.replace("_", " ");
+}
+function unpresentCategoryText(title) {
+    return title.replace(" ", "_").toLowerCase();
+}
+
 
 $( document ).ready(function() {
     console.log( "Initialized!" );
     // Pull approved users
     initializeAuthListener();
-    $('#myModal').modal({
-        keyboard: false
-    }).modal('show');
+    loadItems();
+    loadCategories();
+    initializeCatalogListeners();
 });
 
 var allUsers= [];
 var approvedUsers = [];
 
-var allCatalogs = [];
-var allItems = [];
 
 var database = firebase.database();
+var storageRef = firebase.storage().ref();
 var usersRef;
 var catalogRef;
 var itemsRef;
+
+var allItems = [];
+var allCategories = [];
+var lastItem;
+var itemImages = [];
 // var storageRef = firebase.storage().ref();
 
 function showContent(content) {
@@ -84,6 +79,10 @@ function showContent(content) {
     $(anchorToHighlight).addClass("bg-dark text-white");
     $(containerToShow).removeClass('gone');
 }
+
+
+
+
 
 
 
@@ -235,9 +234,414 @@ function disapproveUser(userID) {
 
 
 
-function loadCatalog(start, end) {
+
+
+
+
+// CATALOG
+function loadCategories() {
+    var categoriesRef = database.ref('/categories');
+
+
+    categoriesRef.once('value').then(function (snapshot) {
+        var categoriesData = snapshot.val();
+        $.each(categoriesData, function(categoriesID, categoriesObject) {
+            var category = new Category();
+            category.name = categoriesID;
+            if(!("no_sub_cat" in categoriesObject)) {
+                category.subCategories = categoriesObject;
+            }
+            allCategories[categoriesID] = category;
+        });
+
+        updateCategories();
+    });
+
+    function updateCategories() {
+        var categoriesContainer = $("#categories-select");
+        var categoryEditContainer = $("#new-category-select");
+        categoriesContainer.html("");
+        categoryEditContainer.html("");
+
+        var categoryHTML = "<option>Categories</option>";
+        for(var categoryID in allCategories) {
+            var category = allCategories[categoryID];
+            categoryHTML += "<option>" + presentCategoryText(category.name) + "</option>";
+        }
+        categoriesContainer.html(categoryHTML);
+        categoryEditContainer.html(categoryHTML);
+    }
+}
+function showSubCategories(categoryID) {
+    var subCategoriesContainer = $("#subcategories-select");
+    subCategoriesContainer.html("");
+
+    var subCategoryHTML = "<option>Sub-Categories</option>";
+    if(categoryID in allCategories){
+        for(var subCategoryID in allCategories[categoryID].subCategories) {
+            subCategoryHTML += "<option>" + presentCategoryText(subCategoryID) + "</option>";
+        }
+    }
+
+    subCategoriesContainer.html(subCategoryHTML);
+}
+function showEditSubCategories(categoryID) {
+    var subCategoriesContainer = $("#new_subcategory_select");
+    subCategoriesContainer.html("");
+
+    var subCategoryHTML = "<option>Other</option>";
+    if(categoryID in allCategories){
+        for(var subCategoryID in allCategories[categoryID].subCategories) {
+            subCategoryHTML += "<option value=\""+ subCategoryID+ "\">" + presentCategoryText(subCategoryID) + "</option>";
+        }
+    }
+
+    subCategoriesContainer.html(subCategoryHTML);
+}
+function initializeCatalogListeners() {
+
+    $('#search-catalog').on('input', function(){
+
+        var searchText = $('#search-catalog').val();
+        lastItem = null;
+        showProgressBar();
+        resetCategories();
+        loadItems(searchText);
+
+        function resetCategories(){
+
+            $('#categories-select').prop('selectedIndex',0);
+            $('#subcategories-select').prop('selectedIndex',0);
+            $('#subcategories-select').html("<option>Sub-Categories</option>");
+        }
+    });
+
+    $( "#categories-select" ).change(function() {
+        var selectedCategory = $('#categories-select').find(":selected").text();
+
+        lastItem = null;
+        showProgressBar();
+        showSubCategories(unpresentCategoryText(selectedCategory));
+        loadItems();
+    });
+
+    $( "#subcategories_select").change(function() {
+
+        lastItem = null;
+        showProgressBar();
+        loadItems();
+    });
+
+    $("#new_category_select").change(function() {
+        var selectedCategory = $('#new_category_select').find(":selected").text();
+        var otherCategory = document.getElementById("otherCategory");
+        var otherSubCategory = document.getElementById("otherSubCategory");
+
+        otherSubCategory.removeAttribute('disabled');
+
+        if(selectedCategory == 'Other') {
+            otherCategory.removeAttribute('disabled');
+        } else {
+            otherCategory.setAttribute('disabled', 'disabled');
+        }
+        showEditSubCategories(unpresentCategoryText(selectedCategory));
+    });
+
+    $( "#new_subcategory_select").change(function() {
+        var selectedSubCategory = $('#new_subcategory_select').find(":selected").text();
+        var otherSubCategory = document.getElementById("otherSubCategory");
+
+        if(selectedSubCategory == 'Other') {
+            otherSubCategory.removeAttribute('disabled');
+        } else {
+            otherSubCategory.setAttribute('disabled', 'disabled');
+        }
+    });
+}
+function loadCategories() {
+    var categoriesRef = database.ref('/categories');
+
+
+    categoriesRef.once('value').then(function (snapshot) {
+        var categoriesData = snapshot.val();
+        $.each(categoriesData, function(categoriesID, categoriesObject) {
+            var category = new Category();
+            category.name = categoriesID;
+            if(!("no_sub_cat" in categoriesObject)) {
+                category.subCategories = categoriesObject;
+            }
+            allCategories[categoriesID] = category;
+        });
+
+        updateCategories();
+    });
+
+    function updateCategories() {
+        var categoriesContainer = $("#categories-select");
+        var editCategories = $("#new_category_select");
+        categoriesContainer.html("");
+        editCategories.html("");
+
+        var categoryHTML = "<option>Categories</option>";
+        var editCategoryHTML = "<option>Other</option>";
+        for(var categoryID in allCategories) {
+            var category = allCategories[categoryID];
+            categoryHTML += "<option value=\""+ category.name+ "\">" + presentCategoryText(category.name) + "</option>";
+            editCategoryHTML += "<option value=\""+ category.name+ "\">" + presentCategoryText(category.name) + "</option>";
+        }
+        categoriesContainer.html(categoryHTML);
+        editCategories.html(editCategoryHTML);
+    }
+}
+function loadItems(searchText) {// Check Catalog.js for more info
+    catalogRef = database.ref('/catalog/');
+
+    var category = $('#categories-select').find(":selected").text();
+    var subcategory = $('#subcategories-select').find(":selected").text();
+    readCategoriesData();
+
+
+    if(searchText){
+        searchText = searchText.toLowerCase();
+        searchWithText();
+    } else{
+        if(category){
+            if(subcategory) {
+                catalogRef = catalogRef.orderByChild("cat_sub").equalTo(category + " " + subcategory);
+            } else { // If a category is selected but a subcategory isnt
+                catalogRef = catalogRef.orderByChild("category").equalTo(category);
+            }
+        } else { // If no filtering has happened
+            if(!lastItem){
+                catalogRef = catalogRef.limitToFirst(25);
+            } else {
+                catalogRef = catalogRef.orderByKey().startAt(lastItem).limitToFirst(25);
+            }
+        }
+
+        allItems = [];
+        catalogRef.on('value', function(snapshot) {
+            parseItemSnapShot(snapshot);
+        });
+    }
+
+    function parseItemSnapShot(snapshot, dontShowChanges) {
+        var itemsData = snapshot.val();
+        $.each(itemsData, function(itemID, itemObject) {
+            lastItem = itemID;
+            var item = new Item();
+            item.id = itemID;
+            item.itemID = itemObject["id"];
+            item.name = itemObject["name"];
+            item.image = itemObject["image"];
+            item.category = itemObject["category"];
+            item.subcategory = itemObject["subcategory"];
+            item.description = itemObject["description"];
+            item.unit = itemObject["unit"];
+            var measurementObjects = itemObject["measurement"];
+
+            for(var measurmentObID in measurementObjects) {
+                var measureOb = measurementObjects[measurmentObID];
+                var measurement = new Measurement();
+                measurement.id = measurmentObID;
+                measurement.dimension = measureOb["dimension"];
+                measurement.price = measureOb["price"];
+                item.measurements.push(measurement);
+            }
+
+
+            item.measurements.sort(function (a, b) {
+                return a.dimension - b.dimension;
+            });
+
+            Object.keys(item).forEach(function(key,index) {
+                if(item[key] == undefined){
+                    item[key] = "";
+                }
+            });
+            allItems[itemID] = item;
+
+        });
+        hideProgressBar();
+        if(!dontShowChanges){
+            showAllItems();
+        }
+        if(!itemsData) {
+            hideProgressBar();
+        }
+        loadPreLoadedItemImages();
+        loadItemImages();
+    }
+
+    function loadPreLoadedItemImages(){
+        for(var itemID in allItems) {
+            var img = document.getElementById('img-'+itemID);
+            if(itemImages[itemID]){
+                img.src = itemImages[itemID];
+            } else {
+                img.src = "./assets/noimage.png";
+            }
+        }
+    }
+
+    function loadItemImages() {
+        for(var itemID in allItems) {
+            if(!itemImages[itemID]){
+                performImageFetchTask(itemID);
+            }
+        }
+    }
+
+    function performImageFetchTask(itemID) {
+        var item = allItems[itemID];
+        storageRef.child('catalog/'+itemID+'/'+item.image).getDownloadURL().then(function(url) {
+            var img = document.getElementById('img-'+itemID);
+            img.src = url;
+            itemImages[itemID] = url;
+            hideProgressBar();
+        }).catch(function(error) {
+            console.log(error.message);
+            hideProgressBar();
+        });
+    }
+
+    function searchWithText() {
+        var searchCategory = catalogRef.orderByChild('category')
+            .startAt(searchText)
+            .endAt(searchText+"\uf8ff");
+        var searchName = catalogRef.orderByChild('name')
+            .startAt(searchText)
+            .endAt(searchText+"\uf8ff");
+        var searchSubCategory = catalogRef.orderByChild('subcategory')
+            .startAt(searchText)
+            .endAt(searchText+"\uf8ff");
+
+        allItems = [];
+        searchCategory.once('value').then(function (snapshot) {
+            showProgressBar();
+            parseItemSnapShot(snapshot, true);
+        });
+        searchName.once('value').then(function (snapshot) {
+            showProgressBar();
+            parseItemSnapShot(snapshot, true);
+        });
+        searchSubCategory.once('value').then(function (snapshot) {
+            showProgressBar();
+            parseItemSnapShot(snapshot);
+        });
+    }
+
+    function readCategoriesData() {
+        category = (category == "Categories") ? null : unpresentCategoryText(category);
+        subcategory = (subcategory == "Sub-Categories") ? null : unpresentCategoryText(subcategory);
+    }
 
 }
+function nextPage(){
+    var searchText = $('#search-catalog').val();
+    searchText = (searchText) ? searchText : null;
+
+    loadItems(searchText);
+    $("html, body").animate({ scrollTop: 100 }, "slow");
+}
+function showAllItems() {
+    var container = $('#items-container');
+    var HTML = "";
+    for(var itemID in allItems) {
+        var item = allItems[itemID];
+        HTML += "                <div id=\"";
+        HTML += item.id;
+        HTML += "\" class=\"col-sm-12 col-md-6 col-lg-4 margin-bottom-10\" onclick=\"editItem('";
+        HTML += item.id;
+        HTML += "');\">";
+        HTML += "                    <div class=\"card text-white\">";
+        HTML += "                        <div class=\"img mx-auto row align-items-center\" style=\"height: 300px;width:auto;\">";
+        HTML += "                            <img id=\"img-" + item.id +"\" class=\"col card-img-top mh-100 width-auto\" src=\"assets\/noimage.png\"";
+        HTML += "                                 alt=\"Image of the specified item\">";
+        HTML += "                        <\/div>";
+        HTML += "                        <div class=\"card-body bg-dark\">";
+        HTML += "                            <h4 class=\"card-title primary-color-text capitalize\">";
+        HTML +=  item.name;
+        HTML += "<\/h4>";
+        HTML += "                            <p class=\"card-text text-truncate\" style=\"height: 4rem;\">";
+        HTML += item.description;
+        HTML += "                            <\/p>";
+        HTML += "                            <div class=\"card-footer float-right bg-transparent no-border no-top-padding no-bottom-padding\">";
+        HTML += "                                <a href=\"javascript:;\" class=\"btn primary-color-text\">Edit<\/a>";
+        HTML += "                            <\/div>";
+        HTML += "                        <\/div>";
+        HTML += "";
+        HTML += "                    <\/div>";
+        HTML += "                <\/div>";
+    }
+    container.html(HTML);
+}
+function editItem(itemID) {
+    var item = (itemID) ? allItems[itemID] : null;
+    var editItemForm = document.getElementById("editItemForm");
+    var publicId = $('#publicID');
+    var itemName = $('#itemName');
+    var category = $('#new_category_select');
+    var subCategory = $('#new_subcategory_select');
+    var otherCategory = document.getElementById("otherCategory");
+    var otherSubCategory = document.getElementById("otherSubCategory");
+    //var measurements = $('#measurements').children('measurement');
+    var unit = $('#itemUnits');
+    var image = $('#itemImage');
+    var description = $('#itemDescription');
+    editItemForm.reset();
+    if(item) {
+        showEditSubCategories(item.category);
+        otherCategory.setAttribute('disabled', 'disabled');
+        otherSubCategory.setAttribute('disabled', 'disabled');
+        fillInItemData();
+    }
+
+
+
+    showModal();
+
+
+    function fillInItemData() {
+        publicId.val(item.itemID);
+        itemName.val(item.name);
+        category.val(item.category +"");
+        subCategory.val(item.subcategory+"");
+        unit.val(item.unit);
+        description.val(item.description);
+
+        var measurementContainer = $('#measurements');
+        measurementContainer.html("");
+        var measurementHTML = "";
+        for(var measurementID in item.measurements) {
+            var measurement = item.measurements[measurementID];
+            measurementHTML += "<div class=\"measurement padding-bottom-10 row\">";
+            measurementHTML += "                            <div class=\"col-sm-6\"><input value=\"";
+            measurementHTML += measurement.dimension;
+            measurementHTML += "\" type=\"number\" class=\"form-control\" placeholder=\"Dimension(Ex: 1.1)\"><\/div>";
+            measurementHTML += "                            <div class=\"col-sm-6\"><input type=\"text\" value=\"";
+            measurementHTML += measurement.price;
+            measurementHTML += "\" class=\"form-control\" placeholder=\"$12\"><\/div>";
+            measurementHTML += "                        <\/div>";
+
+        }
+        measurementContainer.html(measurementHTML);
+    }
+    function showModal() {
+        $('#editItemModal').modal({
+            keyboard: false
+        }).modal('show');
+    }
+}
+// END CATALOG
+
+
+
+
+
+
+
+
 
 function loadCarts(start, end) {
 
@@ -266,10 +670,20 @@ function Item() {
     this.id = ""; // Used only for the database
     this.itemID = "";
     this.name = "";
-    this.images = "";
-    this.imagesURL = [];
+    this.image = "";
     this.category = "";
+    this.unit = "";
     this.subcategory = "";
     this.measurements = []; // Measurement: price
     this.description = "";
+}
+function Category() {
+    this.name = "";
+    this.subCategories = [];
+}
+
+function Measurement() {
+    this.id = "";
+    this.price = ""
+    this.dimension = 0;
 }
