@@ -670,7 +670,7 @@ function submitItem(itemID) {
 
     if(!itemID) {
         var idNumber = Math.floor((Math.random() * 100000) + 1);
-        itemID = sanitizeInput(itemName.val() + publicId.val()+idNumber);
+        itemID = sanitizeRef(itemName.val() + publicId.val()+idNumber);
     }
 
 
