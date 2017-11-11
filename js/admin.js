@@ -22,12 +22,17 @@ function hideProgressBar() {
     $('#loading-text').addClass('invisible');
 }
 function presentCategoryText(title) {
-    return title.replace("_", " ");
+    return title.replace(/_/g, " ");
 }
 function unpresentCategoryText(title) {
-    return title.replace(" ", "_").toLowerCase();
+    return title.replace(/ /g, "_").toLowerCase();
 }
-
+function sanitizeInput(input) {
+    return input.replace(/[&\/\\#,+() $~%'":*?<>{}]/g, '');
+}
+function sanitizeRef(input) {
+    return input.replace(/[&\/\\#,+() $~%'":*?<>{}.]/g, '');
+}
 
 $( document ).ready(function() {
     console.log( "Initialized!" );
@@ -306,7 +311,7 @@ function initializeCatalogListeners() {
         lastItem = null;
         showProgressBar();
         resetCategories();
-        loadItems(searchText);
+        loadItems(searchText.toLowerCase());
 
         function resetCategories(){
 
@@ -579,30 +584,36 @@ function showAllItems() {
 function editItem(itemID) {
     var item = (itemID) ? allItems[itemID] : null;
     var editItemForm = document.getElementById("editItemForm");
-    var publicId = $('#publicID');
-    var itemName = $('#itemName');
-    var category = $('#new_category_select');
-    var subCategory = $('#new_subcategory_select');
+    var submitButton = document.getElementById("submitItemButton");
+    var measurementContainer = $('#measurements');
+
     var otherCategory = document.getElementById("otherCategory");
     var otherSubCategory = document.getElementById("otherSubCategory");
-    //var measurements = $('#measurements').children('measurement');
-    var unit = $('#itemUnits');
-    var image = $('#itemImage');
-    var description = $('#itemDescription');
+
     editItemForm.reset();
+    measurementContainer.html("");
     if(item) {
         showEditSubCategories(item.category);
         otherCategory.setAttribute('disabled', 'disabled');
         otherSubCategory.setAttribute('disabled', 'disabled');
+        submitButton.setAttribute( "onclick", "submitItem('"+item.id+"')" );
         fillInItemData();
+    } else {
+        otherCategory.removeAttribute('disabled');
+        otherSubCategory.removeAttribute('disabled');
+        submitButton.setAttribute( "onclick", "javascript: submitItem()" );
     }
-
-
 
     showModal();
 
 
     function fillInItemData() {
+        var publicId = $('#publicID');
+        var itemName = $('#itemName');
+        var category = $('#new_category_select');
+        var subCategory = $('#new_subcategory_select');
+        var unit = $('#itemUnits');
+        var description = $('#itemDescription');
         publicId.val(item.itemID);
         itemName.val(item.name);
         category.val(item.category +"");
@@ -610,20 +621,18 @@ function editItem(itemID) {
         unit.val(item.unit);
         description.val(item.description);
 
-        var measurementContainer = $('#measurements');
-        measurementContainer.html("");
         var measurementHTML = "";
         for(var measurementID in item.measurements) {
             var measurement = item.measurements[measurementID];
-            measurementHTML += "<div class=\"measurement padding-bottom-10 row\">";
-            measurementHTML += "                            <div class=\"col-sm-6\"><input value=\"";
+            measurementHTML += "<div class=\"measurement padding-bottom-10 row\" id=\""+ measurement.id +"\"'>";
+            measurementHTML += "                            <div class=\"col-sm-1\"><button type=\"button\" class=\"btn btn-outline-danger\"  onclick=\"measurementDelete.call(this)\"><i class=\"material-icons\">&#xE872;<\/i><\/button><\/div>";
+            measurementHTML += "                            <div class=\"col-sm-5\"><input value=\"";
             measurementHTML += measurement.dimension;
-            measurementHTML += "\" type=\"number\" class=\"form-control\" placeholder=\"Dimension(Ex: 1.1)\"><\/div>";
+            measurementHTML += "\" type=\"number\" class=\"form-control measurementDimension\" placeholder=\"Dimension(Ex: 1.1)\"><\/div>";
             measurementHTML += "                            <div class=\"col-sm-6\"><input type=\"text\" value=\"";
             measurementHTML += measurement.price;
-            measurementHTML += "\" class=\"form-control\" placeholder=\"$12\"><\/div>";
+            measurementHTML += "\" class=\"form-control measurementPrice\" placeholder=\"$12\"><\/div>";
             measurementHTML += "                        <\/div>";
-
         }
         measurementContainer.html(measurementHTML);
     }
@@ -633,6 +642,152 @@ function editItem(itemID) {
         }).modal('show');
     }
 }
+function addMeasurement() {
+    var measurementContainer = $('#measurements');
+    var measurementHTML = "";
+    measurementHTML += "<div class=\"measurement padding-bottom-10 row\">";
+    measurementHTML += "                            <div class=\"col-sm-1\"><button type=\"button\" class=\"btn btn-outline-danger\"  onclick=\"measurementDelete.call(this)\"><i class=\"material-icons\">&#xE872;<\/i><\/button><\/div>";
+    measurementHTML += "                            <div class=\"col-sm-5\"><input type=\"number\" class=\"form-control measurementDimension\" placeholder=\"Dimension(Ex: 1.1)\"><\/div>";
+    measurementHTML += "                            <div class=\"col-sm-6\"><input type=\"text\" class=\"form-control measurementPrice\" placeholder=\"$12\"><\/div>";
+    measurementHTML += "                        <\/div>";
+    measurementContainer.append(measurementHTML);
+}
+function submitItem(itemID) {
+    var publicId = $('#publicID');
+    var itemName = $('#itemName');
+    var category = $('#new_category_select').find(":selected").text();
+    var subCategory = $('#new_subcategory_select').find(":selected").text();
+    var otherCategory = document.getElementById("otherCategory");
+    var otherSubCategory = document.getElementById("otherSubCategory");
+    var measurements = $('#measurements').find('.measurement');
+    var unit = $('#itemUnits');
+    var imageObject = $("#itemImage").prop('files')[0];
+    var description = $('#itemDescription');
+    var imageName = (imageObject) ? imageObject.name : "";
+
+
+    anaylzeCatAndSubCat();
+
+    if(!itemID) {
+        var idNumber = Math.floor((Math.random() * 100000) + 1);
+        itemID = sanitizeInput(itemName.val() + publicId.val()+idNumber);
+    }
+
+
+
+
+    var itemRef = database.ref('catalog/' + itemID);
+    itemRef.update({
+        category: category,
+        subcategory: subCategory,
+        id: publicId.val(),
+        description: description.val(),
+        name: itemName.val().toLowerCase(),
+        unit: unit.val(),
+        cat_sub: category + " " + subCategory,
+        measurement : ""
+    }).then(function () {
+        loadCategories();
+        if(imageObject) {
+            uploadImage();
+        } else {
+            $('#editItemModal').modal('hide');
+        }
+    });
+
+
+    for(var measurementID in measurements) {
+        var measurement = $(measurements[measurementID]);
+        var dimension = measurement.find('.measurementDimension').first().val();
+        var price = measurement.find('.measurementPrice').first().val();
+        var measurementExt = (measurement.attr('id')) ? measurement.attr('id') : sanitizeRef(dimension+price);
+        if(dimension != "" && price != "") {
+            var measurementRef =  database.ref('catalog/' + itemID+'/measurement/'+measurementExt);
+            measurementRef.update({
+                dimension: parseFloat(dimension),
+                price: price
+            });
+        }
+    }
+
+    function uploadImage() {
+        new ImageCompressor(imageObject, {
+            quality: .6,
+            maxWidth: 1200,
+            maxHeight: 1200,
+            minWidth: 1000,
+            minHeight: 1000,
+            success(result) {
+                uploadImageAsPromise(result);
+            },
+            error(e) {
+
+            },
+        });
+
+    }
+
+    function uploadImageAsPromise (imageFile) {
+        return new Promise(function (resolve, reject) {
+            var storageRef = this.storageRef.child('catalog/' + itemID + '/' + imageName);
+            var uploadTask = storageRef.put(imageFile);
+
+
+            //Update progress bar
+            uploadTask.on('state_changed',
+                function progress(snapshot) {
+                    // var percentage = snapshot.bytesTransferred / snapshot.totalBytes * 100;
+                },
+                function error(err) {
+                    // showCarEditErrorMessage(err.message);
+                },
+                function complete() {
+                    itemImages[itemID] = null;
+
+                    itemRef.update({
+                        image: imageName
+                    }).then(function () {
+                        $('#editItemModal').modal('hide');
+                    });
+                }
+            );
+        });
+    }
+
+
+
+    function anaylzeCatAndSubCat() {
+        category = unpresentCategoryText(category);
+        subCategory = unpresentCategoryText(subCategory);
+        if(category == 'other'){
+            category = otherCategory.value;
+            category = unpresentCategoryText(category);
+            createNewCategory(category);
+        }
+        if(subCategory == 'other') {
+            subCategory = otherSubCategory.value;
+            subCategory = unpresentCategoryText(subCategory);
+            createNewSubCategory(subCategory);
+        }
+    }
+    function createNewCategory(category) {
+        var categoryRef = database.ref('categories/'+category);
+        categoryRef.set({
+            no_sub_cat: true
+        });
+
+    }
+    function createNewSubCategory(subCategory) {
+        var categoryRef = database.ref('categories/'+category);
+        categoryRef.child('no_sub_cat').remove();
+        categoryRef.child(subCategory).set(true);
+    }
+}
+var measurementDelete = function () {
+    var measurement = $(this).parent().parent();
+    measurement.remove();
+};
+
 // END CATALOG
 
 

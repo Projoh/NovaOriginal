@@ -255,9 +255,10 @@
                         <button type="button" class="float-right btn btn-outline-dark btn-sm add-button" onclick="addMeasurement()"><i class="material-icons large">&#xE145;</i></button>
                     </p>
                     <div id="measurements">
-                        <div class="measurement padding-bottom-10 row">
-                            <div class="col-sm-6"><input type="number" class="form-control" placeholder="Dimension(Ex: 1.1)"></div>
-                            <div class="col-sm-6"><input type="text" class="form-control" placeholder="$12"></div>
+                        <div class="measurement padding-bottom-10 row" id="measurementExt">
+                            <div class="col-sm-5"><input type="number" class="form-control measurementDimension" placeholder="Dimension(Ex: 1.1)"></div>
+                            <div class="col-sm-5"><input type="text" class="form-control measurementPrice" placeholder="$12"></div>
+                            <div class="col-sm-2"><button type="button" class="btn btn-outline-danger" onclick="measurementDelete.call(this)"><i class="material-icons">&#xE872;</i></button></div>
                         </div>
                         <div class="measurement padding-bottom-10 row">
                             <div class="col-sm-6"><input type="number" class="form-control" placeholder="Dimension(Ex: 1.1)"></div>
@@ -281,7 +282,7 @@
             </form>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn primary-color text-white" onclick="addItemToCart('dbIB2dsfsfsf','0');">Submit</button>
+                <button id="submitItemButton" type="button" class="btn primary-color text-white" onclick="submitItem();">Submit</button>
             </div>
         </div>
     </div>
@@ -297,6 +298,7 @@
 <script src="js/bootstrap.min.js"
         integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
         crossorigin="anonymous"></script>
+<script type="text/javascript" src="js/image-compressor.min.js"></script>
 <script src="js/base.js"></script>
 <script src="js/admin.js"></script>
 </body>
