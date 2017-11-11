@@ -32,13 +32,11 @@ function openLoginModal() {
     })
     $('#loginModal').modal('show');
 }
-
 function presentCategoryText(title) {
-    return title.replace("_", " ");
+    return title.replace(/_/g, " ");
 }
-
 function unpresentCategoryText(title) {
-    return title.replace(" ", "_").toLowerCase();
+    return title.replace(/ /g, "_").toLowerCase();
 }
 
 var database = firebase.database();
