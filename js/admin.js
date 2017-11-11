@@ -628,7 +628,7 @@ function editItem(itemID) {
             measurementHTML += "                            <div class=\"col-sm-1\"><button type=\"button\" class=\"btn btn-outline-danger\"  onclick=\"measurementDelete.call(this)\"><i class=\"material-icons\">&#xE872;<\/i><\/button><\/div>";
             measurementHTML += "                            <div class=\"col-sm-5\"><input value=\"";
             measurementHTML += measurement.dimension;
-            measurementHTML += "\" type=\"number\" class=\"form-control measurementDimension\" placeholder=\"Dimension(Ex: 1.1)\"><\/div>";
+            measurementHTML += "\" type=\"text\" class=\"form-control measurementDimension\" placeholder=\"Dimension(Ex: 1.1)\"><\/div>";
             measurementHTML += "                            <div class=\"col-sm-6\"><input type=\"text\" value=\"";
             measurementHTML += measurement.price;
             measurementHTML += "\" class=\"form-control measurementPrice\" placeholder=\"$12\"><\/div>";
@@ -647,7 +647,7 @@ function addMeasurement() {
     var measurementHTML = "";
     measurementHTML += "<div class=\"measurement padding-bottom-10 row\">";
     measurementHTML += "                            <div class=\"col-sm-1\"><button type=\"button\" class=\"btn btn-outline-danger\"  onclick=\"measurementDelete.call(this)\"><i class=\"material-icons\">&#xE872;<\/i><\/button><\/div>";
-    measurementHTML += "                            <div class=\"col-sm-5\"><input type=\"number\" class=\"form-control measurementDimension\" placeholder=\"Dimension(Ex: 1.1)\"><\/div>";
+    measurementHTML += "                            <div class=\"col-sm-5\"><input type=\"text\" class=\"form-control measurementDimension\" placeholder=\"Dimension(Ex: 1.1)\"><\/div>";
     measurementHTML += "                            <div class=\"col-sm-6\"><input type=\"text\" class=\"form-control measurementPrice\" placeholder=\"$12\"><\/div>";
     measurementHTML += "                        <\/div>";
     measurementContainer.append(measurementHTML);
@@ -704,7 +704,7 @@ function submitItem(itemID) {
         if(dimension != "" && price != "") {
             var measurementRef =  database.ref('catalog/' + itemID+'/measurement/'+measurementExt);
             measurementRef.update({
-                dimension: parseFloat(dimension),
+                dimension: dimension,
                 price: price
             });
         }
@@ -712,11 +712,8 @@ function submitItem(itemID) {
 
     function uploadImage() {
         new ImageCompressor(imageObject, {
-            quality: .6,
-            maxWidth: 1200,
-            maxHeight: 1200,
-            minWidth: 1000,
-            minHeight: 1000,
+            quality: .4,
+            convertSize: 2000000,
             success(result) {
                 uploadImageAsPromise(result);
             },

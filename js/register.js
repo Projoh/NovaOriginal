@@ -86,6 +86,7 @@ function showThankYouScreen() {
 
 function createNewUser(userID) {
     var newUser = new User();
+    var user = firebase.auth().currentUser;
 
 
     newUser.email = sanitizeInput($('#email').val());
@@ -97,6 +98,9 @@ function createNewUser(userID) {
     newUser.careSetting = sanitizeInput($('#caresetting').find(":selected").text());
     newUser.registerTime = Math.round(new Date() / 1000);
 
+    user.updateProfile({
+        displayName: newUser.name
+    });
 
     var userRef = database.ref('users/' + userID);
     userRef.set({
@@ -116,7 +120,6 @@ function createNewUser(userID) {
 
 function User() {
     this.email = "";
-    this.password = "";
     this.name = "";
     this.company = ""
     this.telephone = "";

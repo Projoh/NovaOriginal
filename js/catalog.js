@@ -1,7 +1,13 @@
 function initializeAuthListener() {
     firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
-
+            $('#loginMenuItem').addClass('gone');
+            $('#registerMenuItem').addClass('gone');
+            $('#logoutMenuItem').removeClass('gone');
+        } else {
+            $('#loginMenuItem').removeClass('gone');
+            $('#registerMenuItem').removeClass('gone');
+            $('#logoutMenuItem').addClass('gone');
         }
     });
 }
@@ -14,7 +20,6 @@ function showProgressBar() {
     // }, 400);
     $('#loading-text').removeClass('invisible');
 }
-
 function hideProgressBar() {
     // var progressBar = $('#progress-bar');
     //
@@ -24,7 +29,6 @@ function hideProgressBar() {
 
     $('#loading-text').addClass('invisible');
 }
-
 function openLoginModal() {
     $('.navbar-toggler').click();
     $('#loginModal').modal({
@@ -38,7 +42,53 @@ function presentCategoryText(title) {
 function unpresentCategoryText(title) {
     return title.replace(/ /g, "_").toLowerCase();
 }
+$(function() {
+    function AttemptLogin() {
+        var email = $('#loginEmail').val();
+        var password = $('#loginPassword').val();
 
+
+
+        firebase.auth().signInWithEmailAndPassword(email, password).then(function () {
+            var user = firebase.auth().currentUser;
+            $('#loginModal').modal('hide');
+            showSnackBar("Welcome "+user.displayName);
+        }).catch(function(error) {
+            updateErrorMessage(error.message);
+        });
+
+        function updateErrorMessage(error) {
+            if(error !== "") {
+                $('#error-text').html(error);
+            }
+        }
+    }
+
+    $('#login-form').on("submit",function(e) {
+        e.preventDefault();
+        $('#error-text').html("");
+        AttemptLogin();
+    });
+
+});
+
+function showSnackBar(messageText) {
+    var x = document.getElementById("snackbar");
+    x.className = "show";
+    if(messageText) {
+        x.innerHTML= messageText;
+    }
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+}
+
+function logOut() {
+    firebase.auth().signOut().then(function() {
+        $('.navbar-toggler').click();
+        showSnackBar("You've successfully logged out!");
+    }).catch(function(error) {
+        // An error happened.
+    });
+}
 var database = firebase.database();
 var storageRef = firebase.storage().ref();
 var allItems = [];
@@ -215,7 +265,7 @@ function showItemModal(itemID) {
         var imageSrc = (itemImages[itemID]) ? itemImages[itemID] : "assets\/noimage.png";
         var priceText = (approved) ? firstPrice.price : (currentUser) ?
             "Verification in progress" :
-            "<a class=\"text-info\" href=\".\/register.html\">View Price<\/a>";
+            "<a class=\"text-info\" onclick=\"redirectToRegisterToViewPrice();\">View Price<\/a>";
         modalHTML += "<div id=\"itemModal\" class=\"modal fade bd-example-modal-lg\" tabindex=\"-1\" role=\"dialog\"";
         modalHTML += "             aria-labelledby=\"myLargeModalLabel\" aria-hidden=\"true\">";
         modalHTML += "            <div class=\"modal-dialog modal-lg\">";
@@ -238,6 +288,9 @@ function showItemModal(itemID) {
         modalHTML += "                            <h1 class=\"display-4 capitalize\">" +
             item.name +
             "<\/h1>";
+        modalHTML += "                            <small class=\"text-secondary capitalize\"> ";
+        modalHTML += "ID: " +item.itemID;
+        modalHTML += "<\/small> <br>";
         modalHTML += "                            <small class=\"text-secondary capitalize\"> ";
         modalHTML += presentCategoryText(item.category);
         modalHTML += " > ";
@@ -283,9 +336,20 @@ function showItemModal(itemID) {
 }
 
 function addItemToCart(itemID, extensionSelected) {
+    var user = firebase.auth().currentUser;
 
+    if(!user){
+        redirectToRegisterToViewPrice();
+    }
+    if(user.uid in approvedUsers) {
+
+    }
 }
 
+function redirectToRegisterToViewPrice() {
+    showSnackBar("You must register to perform this action!<br> Redirecting you in 1 second...");
+    setTimeout(function(){ window.location.href = "register.html"; }, 2500);
+}
 function loadCategories() {
     var categoriesRef = database.ref('/categories');
 
@@ -497,6 +561,6 @@ function Category() {
 
 function Measurement() {
     this.id = "";
-    this.price = ""
+    this.price = "";
     this.dimension = 0;
 }

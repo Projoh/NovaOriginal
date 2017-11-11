@@ -1,21 +1,14 @@
-function initializeFireBase() {
-    var config = {
-        apiKey: "AIzaSyDa1pFV63C-8OpQEZMHMx70EFIdO59PVzI",
-        authDomain: "nova-medical-technologies.firebaseapp.com",
-        databaseURL: "https://nova-medical-technologies.firebaseio.com",
-        projectId: "nova-medical-technologies",
-        storageBucket: "",
-        messagingSenderId: "315237263721"
-    };
-    firebase.initializeApp(config);
-}
 
 function initializeAuthListener() {
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
-            // window.location.href = "admin.html";
+            $('#loginMenuItem').addClass('gone');
+            $('#registerMenuItem').addClass('gone');
+            $('#logoutMenuItem').removeClass('gone');
         } else {
-            // No user is signed in.
+            $('#loginMenuItem').removeClass('gone');
+            $('#registerMenuItem').removeClass('gone');
+            $('#logoutMenuItem').addClass('gone');
         }
     });
 }
@@ -23,13 +16,11 @@ function initializeAuthListener() {
 $( document ).ready(function() {
     console.log( "Initialized!" );
 
-    initializeFireBase();
     initializeAuthListener();
 
 });
 
 function goToContact() {
-    var ContactUsDiv = $('#contact_us');
 
     $('html, body').animate({
         scrollTop: $("#contact_us").offset().top
@@ -42,4 +33,53 @@ function openLoginModal() {
         keyboard: false
     })
     $('#loginModal').modal('show');
+}
+
+
+$(function() {
+    function AttemptLogin() {
+        var email = $('#loginEmail').val();
+        var password = $('#loginPassword').val();
+
+
+
+        firebase.auth().signInWithEmailAndPassword(email, password).then(function () {
+            $('#loginModal').modal('hide');
+            var user = firebase.auth().currentUser;
+            showSnackBar("Welcome "+user.displayName);
+        }).catch(function(error) {
+             updateErrorMessage(error.message);
+        });
+
+        function updateErrorMessage(error) {
+            if(error !== "") {
+                $('#error-text').html(error);
+            }
+        }
+    }
+
+    $('#login-form').on("submit",function(e) {
+        e.preventDefault();
+        $('#error-text').html("");
+        AttemptLogin();
+    });
+
+});
+
+function showSnackBar(messageText) {
+    var x = document.getElementById("snackbar");
+    x.className = "show";
+    if(messageText) {
+        x.innerHTML= messageText;
+    }
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+}
+
+function logOut() {
+    firebase.auth().signOut().then(function() {
+        $('.navbar-toggler').click();
+        showSnackBar("You've successfully logged out!");
+    }).catch(function(error) {
+        // An error happened.
+    });
 }

@@ -22,8 +22,14 @@
             <li class="nav-item">
                 <a class="nav-link text-white" href="./index.html">HOME</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" id="loginMenuItem">
                 <a class="nav-link text-white" href="#" onclick="openLoginModal()">LOGIN</a>
+            </li>
+            <li class="nav-item gone" id="logoutMenuItem">
+                <a class="nav-link text-white" href="#" onclick="logOut()">LOG OUT</a>
+            </li>
+            <li class="nav-item" id="registerMenuItem">
+                <a class="nav-link text-white" href="./register.html">REGISTER</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link text-white" href="./index.html#contact_us">CONTACT</a>
@@ -61,15 +67,14 @@
             </div>
             <div class="padding-16">
                 <a class="lead margin-bottom-10" href="./register.html">Don't have an account? Register here.</a>
-                <form class="padding-top-10" id="login-form">
+                <form id="login-form">
                     <div class="form-group">
-                        <label for="exampleInputEmail1">Email address</label>
-                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                               placeholder="Enter email">
+                        <label for="loginEmail">Email address</label>
+                        <input type="email" class="form-control" id="loginEmail" aria-describedby="emailHelp" placeholder="Enter email">
                     </div>
                     <div class="form-group">
-                        <label for="exampleInputPassword1">Password</label>
-                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" class="form-control" id="loginPassword" placeholder="Password">
                     </div>
                     <button type="submit" class="btn btn-dark float-right">Submit</button>
                 </form>
@@ -79,9 +84,10 @@
     </div>
 </div>
 
+<div id="snackbar"></div>
 
 <main role="main" >
-    <div class="jumbotron jumbotron-fluid bg-dark text-white no-margin no-top-padding">
+    <div class="jumbotron jumbotron-fluid bg-dark text-white no-margin no-top-padding no-bottom-padding">
 
         <nav class="navbar bg-transparent">
             <p class="h4 padding-top-10 primary-color-text">Nova Medical Technologies</p>
@@ -92,14 +98,18 @@
 
         </nav>
         <div class="container" id="heading-container">
-            <div class="row align-items-center">
-                <div class="col">
-                    <div class="containe margin-top-10">
-                        <h1 class="display-3">Catalog</h1>
-                    </div>
-
+                <div class="padding-bottom-10 padding-left-12">
+                        <div class="containe margin-top-10">
+                            <h1 class="display-3">Catalog</h1>
+                        </div>
                 </div>
-            </div>
+
+                <div class="row justify-content-end no-margin no-bottom-padding">
+                    <div class="col-auto icon">
+                        <p><i class="material-icons icon padding-left-12">&#xE8CC;</i>
+                        0</p>
+                    </div>
+                </div>
         </div>
     </div>
 
