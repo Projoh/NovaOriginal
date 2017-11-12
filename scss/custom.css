@@ -6478,6 +6478,9 @@ html {
   position: relative;
   min-height: 100%; }
 
+.full-height {
+  height: 100%; }
+
 .footer {
   position: absolute;
   bottom: 0;

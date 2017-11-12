@@ -159,6 +159,9 @@ html {
 body {
   //margin-bottom: 60px; /* Margin bottom by footer height */
 }
+.full-height {
+  height: 100%;
+}
 .footer {
   position: absolute;
   bottom: 0;
@@ -187,7 +190,6 @@ body {
   -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
   animation: fadein 0.5s, fadeout 0.5s 2.5s;
 }
-
 @-webkit-keyframes fadein {
   from {top: 0; opacity: 0;}
   to {top: 30px; opacity: 1;}

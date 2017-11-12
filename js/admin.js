@@ -330,7 +330,7 @@ function initializeCatalogListeners() {
         loadItems();
     });
 
-    $( "#subcategories_select").change(function() {
+    $( "#subcategories-select").change(function() {
 
         lastItem = null;
         showProgressBar();
@@ -626,10 +626,13 @@ function editItem(itemID) {
             var measurement = item.measurements[measurementID];
             measurementHTML += "<div class=\"measurement padding-bottom-10 row\" id=\""+ measurement.id +"\"'>";
             measurementHTML += "                            <div class=\"col-sm-1\"><button type=\"button\" class=\"btn btn-outline-danger\"  onclick=\"measurementDelete.call(this)\"><i class=\"material-icons\">&#xE872;<\/i><\/button><\/div>";
-            measurementHTML += "                            <div class=\"col-sm-5\"><input value=\"";
+            measurementHTML += "                            <div class=\"col-sm-3\"><input value=\"";
+            measurementHTML += measurement.id;
+            measurementHTML += "\" type=\"text\" class=\"form-control measurementID\" placeholder=\"ID\"><\/div>";
+            measurementHTML += "                            <div class=\"col-sm-4\"><input value=\"";
             measurementHTML += measurement.dimension;
             measurementHTML += "\" type=\"text\" class=\"form-control measurementDimension\" placeholder=\"Dimension(Ex: 1.1)\"><\/div>";
-            measurementHTML += "                            <div class=\"col-sm-6\"><input type=\"text\" value=\"";
+            measurementHTML += "                            <div class=\"col-sm-4\"><input type=\"text\" value=\"";
             measurementHTML += measurement.price;
             measurementHTML += "\" class=\"form-control measurementPrice\" placeholder=\"$12\"><\/div>";
             measurementHTML += "                        <\/div>";
@@ -647,8 +650,9 @@ function addMeasurement() {
     var measurementHTML = "";
     measurementHTML += "<div class=\"measurement padding-bottom-10 row\">";
     measurementHTML += "                            <div class=\"col-sm-1\"><button type=\"button\" class=\"btn btn-outline-danger\"  onclick=\"measurementDelete.call(this)\"><i class=\"material-icons\">&#xE872;<\/i><\/button><\/div>";
-    measurementHTML += "                            <div class=\"col-sm-5\"><input type=\"text\" class=\"form-control measurementDimension\" placeholder=\"Dimension(Ex: 1.1)\"><\/div>";
-    measurementHTML += "                            <div class=\"col-sm-6\"><input type=\"text\" class=\"form-control measurementPrice\" placeholder=\"$12\"><\/div>";
+    measurementHTML += "                            <div class=\"col-sm-3\"><input type=\"text\" class=\"form-control measurementID\" placeholder=\"ID\"><\/div>";
+    measurementHTML += "                            <div class=\"col-sm-4\"><input type=\"text\" class=\"form-control measurementDimension\" placeholder=\"Dimension(Ex: 1.1)\"><\/div>";
+    measurementHTML += "                            <div class=\"col-sm-4\"><input type=\"text\" class=\"form-control measurementPrice\" placeholder=\"$12\"><\/div>";
     measurementHTML += "                        <\/div>";
     measurementContainer.append(measurementHTML);
 }
@@ -696,11 +700,13 @@ function submitItem(itemID) {
     });
 
 
+    database.ref('catalog/' + itemID+'/measurement/').remove();
     for(var measurementID in measurements) {
         var measurement = $(measurements[measurementID]);
         var dimension = measurement.find('.measurementDimension').first().val();
         var price = measurement.find('.measurementPrice').first().val();
-        var measurementExt = (measurement.attr('id')) ? measurement.attr('id') : sanitizeRef(dimension+price);
+        var measurementIDVal = measurement.find('.measurementID').first().val();
+        var measurementExt = (measurementIDVal == "") ? sanitizeRef(dimension+price) : sanitizeRef(measurementIDVal);
         if(dimension != "" && price != "") {
             var measurementRef =  database.ref('catalog/' + itemID+'/measurement/'+measurementExt);
             measurementRef.update({

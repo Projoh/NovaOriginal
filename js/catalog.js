@@ -181,7 +181,7 @@ function showAllItems() {
         HTML += "\" class=\"col-sm-12 col-md-6 col-lg-4 margin-bottom-10\" onclick=\"showItemModal('";
         HTML += item.id;
         HTML += "');\">";
-        HTML += "                    <div class=\"card text-white\">";
+        HTML += "                    <div class=\"card text-white full-height\">";
         HTML += "                        <div class=\"img mx-auto row align-items-center\" style=\"height: 300px;width:auto;\">";
         HTML += "                            <img id=\"img-" + item.id +"\" class=\"col card-img-top mh-100 width-auto\" src=\"assets\/noimage.png\"";
         HTML += "                                 alt=\"Image of the specified item\">";
@@ -340,10 +340,50 @@ function addItemToCart(itemID, extensionSelected) {
 
     if(!user){
         redirectToRegisterToViewPrice();
+        return;
     }
+    $('#itemModal').modal('hide');
+    $('#addItemToCartButton').off();
+    showAddItemModal(itemID, extensionSelected, user);
+
+}
+
+function showAddItemModal(itemID, extensionSelected, user) {
+    var item = allItems[itemID];
+    var count; // Amount of item selected from number input.
+    var price;
     if(user.uid in approvedUsers) {
+        // Set price to item price
+    } else {
+        price = 0;
+    }
+
+
+    modifyModal();
+    showModal();
+
+
+
+    function modifyModal() {
 
     }
+
+
+    function showModal() {
+
+    }
+
+    $('#addItemToCartButton').on('click', function () {
+            var cartRef = database.ref('carts/'+user.uid+'/'+itemID);
+            cartRef.set({
+               amount: count,
+               measurementID:  extensionSelected,
+                price: price
+            }).then(function () {
+                showSnackBar("Added "+ count + " " + item.name + " to your cart");
+                // Close Modal
+            });
+    });
 }
 
 function redirectToRegisterToViewPrice() {
