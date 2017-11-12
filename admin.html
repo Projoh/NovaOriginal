@@ -33,9 +33,8 @@
             </div>
         </div>
     </div>
-
 </div>
-
+<div id="snackbar"></div>
 <ul class="nav nav-pills nav-fill bg-secondary " id="nav-bar">
     <li class="nav-item">
         <a class="nav-link text-dark" href="#"  id="anchor-users" onclick="loadUsers(0 , 25); showContent('users');">Users</a>
@@ -281,6 +280,7 @@
                 </div>
             </form>
             <div class="modal-footer">
+                <button id="deleteItemButton" type="button" class="btn btn-danger" data-dismiss="modal">Delete</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                 <button id="submitItemButton" type="button" class="btn primary-color text-white" onclick="submitItem();">Submit</button>
             </div>

@@ -15,6 +15,14 @@ function logOut() {
         // An error happened.
     });
 }
+function showSnackBar(messageText) {
+    var x = document.getElementById("snackbar");
+    x.className = "show";
+    if(messageText) {
+        x.innerHTML= messageText;
+    }
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+}
 function showProgressBar() {
     $('#loading-text').removeClass('invisible');
 }
@@ -31,7 +39,7 @@ function sanitizeInput(input) {
     return input.replace(/[&\/\\#,+() $~%'":*?<>{}]/g, '');
 }
 function sanitizeRef(input) {
-    return input.replace(/[&\/\\#,+() $~%'":*?<>{}.]/g, '');
+    return input? input.replace(/[&\/\\#,+() $~%'":*?<>{}.]/g, '') : "";
 }
 
 $( document ).ready(function() {
@@ -481,10 +489,11 @@ function loadItems(searchText) {// Check Catalog.js for more info
     function loadPreLoadedItemImages(){
         for(var itemID in allItems) {
             var img = document.getElementById('img-'+itemID);
-            if(itemImages[itemID]){
+            if(itemImages[itemID] && img){
                 img.src = itemImages[itemID];
             } else {
-                img.src = "./assets/noimage.png";
+                if(img)
+                    img.src = "./assets/noimage.png";
             }
         }
     }
@@ -499,6 +508,8 @@ function loadItems(searchText) {// Check Catalog.js for more info
 
     function performImageFetchTask(itemID) {
         var item = allItems[itemID];
+        if(item.image == "")
+            return;
         storageRef.child('catalog/'+itemID+'/'+item.image).getDownloadURL().then(function(url) {
             var img = document.getElementById('img-'+itemID);
             img.src = url;
@@ -585,23 +596,27 @@ function editItem(itemID) {
     var item = (itemID) ? allItems[itemID] : null;
     var editItemForm = document.getElementById("editItemForm");
     var submitButton = document.getElementById("submitItemButton");
+    var deleteButton = document.getElementById("deleteItemButton");
     var measurementContainer = $('#measurements');
 
     var otherCategory = document.getElementById("otherCategory");
     var otherSubCategory = document.getElementById("otherSubCategory");
 
     editItemForm.reset();
+
     measurementContainer.html("");
     if(item) {
         showEditSubCategories(item.category);
         otherCategory.setAttribute('disabled', 'disabled');
         otherSubCategory.setAttribute('disabled', 'disabled');
         submitButton.setAttribute( "onclick", "submitItem('"+item.id+"')" );
+        deleteButton.setAttribute( "onclick", "deleteItem('"+item.id+"')" );
         fillInItemData();
     } else {
         otherCategory.removeAttribute('disabled');
         otherSubCategory.removeAttribute('disabled');
         submitButton.setAttribute( "onclick", "javascript: submitItem()" );
+        deleteButton.setAttribute( "onclick", "" );
     }
 
     showModal();
@@ -625,14 +640,14 @@ function editItem(itemID) {
         for(var measurementID in item.measurements) {
             var measurement = item.measurements[measurementID];
             measurementHTML += "<div class=\"measurement padding-bottom-10 row\" id=\""+ measurement.id +"\"'>";
-            measurementHTML += "                            <div class=\"col-sm-1\"><button type=\"button\" class=\"btn btn-outline-danger\"  onclick=\"measurementDelete.call(this)\"><i class=\"material-icons\">&#xE872;<\/i><\/button><\/div>";
-            measurementHTML += "                            <div class=\"col-sm-3\"><input value=\"";
+            measurementHTML += "                            <div class=\"col-sm-2\"><button type=\"button\" class=\"btn btn-outline-danger\"  onclick=\"measurementDelete.call(this)\"><i class=\"material-icons\">&#xE872;<\/i><\/button><\/div>";
+            measurementHTML += "                            <div class=\"col-sm-4\"><input value=\"";
             measurementHTML += measurement.id;
             measurementHTML += "\" type=\"text\" class=\"form-control measurementID\" placeholder=\"ID\"><\/div>";
-            measurementHTML += "                            <div class=\"col-sm-4\"><input value=\"";
+            measurementHTML += "                            <div class=\"col-sm-3\"><input value=\"";
             measurementHTML += measurement.dimension;
             measurementHTML += "\" type=\"text\" class=\"form-control measurementDimension\" placeholder=\"Dimension(Ex: 1.1)\"><\/div>";
-            measurementHTML += "                            <div class=\"col-sm-4\"><input type=\"text\" value=\"";
+            measurementHTML += "                            <div class=\"col-sm-3\"><input type=\"text\" value=\"";
             measurementHTML += measurement.price;
             measurementHTML += "\" class=\"form-control measurementPrice\" placeholder=\"$12\"><\/div>";
             measurementHTML += "                        <\/div>";
@@ -649,12 +664,24 @@ function addMeasurement() {
     var measurementContainer = $('#measurements');
     var measurementHTML = "";
     measurementHTML += "<div class=\"measurement padding-bottom-10 row\">";
-    measurementHTML += "                            <div class=\"col-sm-1\"><button type=\"button\" class=\"btn btn-outline-danger\"  onclick=\"measurementDelete.call(this)\"><i class=\"material-icons\">&#xE872;<\/i><\/button><\/div>";
-    measurementHTML += "                            <div class=\"col-sm-3\"><input type=\"text\" class=\"form-control measurementID\" placeholder=\"ID\"><\/div>";
-    measurementHTML += "                            <div class=\"col-sm-4\"><input type=\"text\" class=\"form-control measurementDimension\" placeholder=\"Dimension(Ex: 1.1)\"><\/div>";
-    measurementHTML += "                            <div class=\"col-sm-4\"><input type=\"text\" class=\"form-control measurementPrice\" placeholder=\"$12\"><\/div>";
+    measurementHTML += "                            <div class=\"col-sm-2\"><button type=\"button\" class=\"btn btn-outline-danger\"  onclick=\"measurementDelete.call(this)\"><i class=\"material-icons\">&#xE872;<\/i><\/button><\/div>";
+    measurementHTML += "                            <div class=\"col-sm-4\"><input type=\"text\" class=\"form-control measurementID\" placeholder=\"ID\"><\/div>";
+    measurementHTML += "                            <div class=\"col-sm-3\"><input type=\"text\" class=\"form-control measurementDimension\" placeholder=\"Dimension(Ex: 1.1)\"><\/div>";
+    measurementHTML += "                            <div class=\"col-sm-3\"><input type=\"text\" class=\"form-control measurementPrice\" placeholder=\"$12\"><\/div>";
     measurementHTML += "                        <\/div>";
     measurementContainer.append(measurementHTML);
+}
+function deleteItem(itemID) {
+    var itemName = allItems[itemID].name;
+    if(!itemID || itemID.length < 1){
+        return;
+    }
+    var itemRef = database.ref('catalog/' + itemID);
+    delete allItems[itemID];
+    delete itemImages[itemID];
+    itemRef.remove().then(function () {
+        showSnackBar("Removed Item " + itemName);
+    });
 }
 function submitItem(itemID) {
     var publicId = $('#publicID');
