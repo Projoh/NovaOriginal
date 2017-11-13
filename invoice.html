@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Invoice</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="scss/custom.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--<link rel="stylesheet" href="css/index.css">-->
+</head>
+<body class="bg-light">
+<div class="bg-dark">
+        <div class="collapse" id="navbarToggleExternalContent">
+            <div class=" p-4">
+                <ul class="nav justify-content-end">
+                    <li class="nav-item" id="logoutMenuItem">
+                        <a class="nav-link text-white" href="#" onclick="logOut()">LOG OUT</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="./index.html">HOME</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="./catalog.html">CATALOG</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="./index.html#contact_us">CONTACT</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+</div>
+<div class="jumbotron jumbotron-fluid primary-color no-margin no-top-padding no-bottom-padding">
+
+    <nav class="navbar bg-transparent">
+        <p class="h4 padding-top-10 text-white">Nova Medical Technologies</p>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent"
+                aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="material-icons large text-white">&#xE5D2;</i>
+        </button>
+
+    </nav>
+    <div class="container" id="heading-container">
+        <div class="padding-bottom-10 padding-top-10">
+            <div class="containe margin-top-10">
+                <h1 class="display-3">Invoice</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container padding-top-10">
+
+    <table class="table padding-bottom-10 padding-top-10">
+        <thead>
+        <tr>
+            <th scope="col">Item</th>
+            <th scope="col">Item ID</th>
+            <th scope="col">Measurement</th>
+            <th scope="col">Price</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Total</th>
+            <th scope="col"> </th>
+        </tr>
+        </thead>
+        <tbody id="cartItemsContainer">
+        </tbody>
+    </table>
+    <div class="checkoutContainer w-100 gone">
+        <div class="row justify-content-end">
+            <div class="col-auto">
+                <p class="h5">$<custom id="cartSalesTax"></custom> Sales Tax</p>
+            </div>
+        </div>
+        <div class="row justify-content-end">
+        <div class="col-auto">
+            <p class="h1">$<custom id="cartTotalAmount"></custom> Total</p>
+        </div>
+        </div>
+
+        <div class="row justify-content-end">
+            <div class="col-auto">
+                <button type="button" class="btn icon text-white primary-color btn-lg">Contact for Procurement</button>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="notApprovedUser" class="row justify-content-end gone padding-top-10 margin-top-10">
+        <div class="col-auto">
+
+            <blockquote class="blockquote">
+                <p class="mb-0">
+                    You will be contacted by a representative shortly
+                    in order to enable price visibility for your account.
+                </p>
+            </blockquote>
+        </div>
+    </div>
+</div>
+
+<div id="snackbar"></div>
+
+
+<script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+        integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+        crossorigin="anonymous"></script>
+<script src="js/bootstrap.min.js"
+        integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+        crossorigin="anonymous"></script>
+<script src="js/base.js"></script>
+<script src="js/invoice.js"></script>
+</body>
+</html>

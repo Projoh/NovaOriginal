@@ -98,18 +98,18 @@
 
         </nav>
         <div class="container" id="heading-container">
-                <div class="padding-bottom-10 padding-left-12">
-                        <div class="containe margin-top-10">
-                            <h1 class="display-3">Catalog</h1>
-                        </div>
+            <div class="padding-bottom-10 padding-left-12">
+                <div class="containe margin-top-10">
+                    <h1 class="display-3">Catalog</h1>
                 </div>
+            </div>
 
-                <div class="row justify-content-end no-margin no-bottom-padding">
-                    <div class="col-auto icon">
-                        <p><i class="material-icons icon padding-left-12">&#xE8CC;</i>
-                        0</p>
-                    </div>
+            <div class="row justify-content-end no-margin no-bottom-padding">
+                <div class="col-auto icon" onclick="window.location='./invoice.html';">
+                    <p><i class="material-icons icon padding-left-12">&#xE8CC;</i>
+                        <custom id="shoppingCartAmount">0</custom></p>
                 </div>
+            </div>
         </div>
     </div>
 
@@ -178,21 +178,54 @@
         <div class="addItemModal">
             <div id="addItemModal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog"
                  aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content padding-16">
-
-
+                <div class="modal-dialog  modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Add
+                                <custom id="addCartItemName" class="text-capitalize">Pederson Vaginal Specula</custom>
+                                (
+                                <custom id="addCartDimensionName">10 x 30</custom>
+                                <custom id="addCartUnit">mm</custom>) To Cart</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
+                        <div class="modal-body">
+                            <small class="text-secondary capitalize"> ID: <custom id="addCartID">70.130.00</custom>:<custom id="addCartMeasurementID"></custom></small><br>
+                            <small class="text-secondary capitalize padding-bottom-10">
+                                <custom id="addCartCategory">obstetrics and gynecology</custom>  &gt;
+                                <custom id="addCartSubCategory">vaginal specula</custom></small>
+                                <div id="addItemCost" class="padding-top-10">
+                                    <label class="font-weight-bold">Cost per Item</label>
+                                    <p> $<custom id="itemPrice">100.00</custom> + $<custom id="itemPriceTax">7.00</custom>(Tax)
+                                        = <mark>$<custom id="itemTotalPrice">107.00</custom></mark></p>
+                                </div>
 
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="amountOfAddItem" class="font-weight-bold">Quantity</label>
+                                            <input type="number" class="form-control form-control-sm" id="amountOfAddItem" value="1"
+                                                   onkeypress="return (event.charCode == 8 ||
+                                                event.charCode == 0 ||
+                                                 event.charCode == 13)
+                                                  ? null : event.charCode >= 48 &&
+                                                   event.charCode <= 57" name="itemConsumption" />
+                                        </div>
 
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                            <button id="addItemToCartButton" type="button" class="btn primary-color text-white" >Add</button>
-                        </div>
-                    </div>
+                                    </div>
+                                </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" id="finalAddItemToCartButton" class="btn primary-color text-white">Add Item</button>
                 </div>
             </div>
         </div>
+    </div>
+    </div>
+    </div>
     </div>
 </main>
 

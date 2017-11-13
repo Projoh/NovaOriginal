@@ -76,7 +76,7 @@ i.large {
   border-top-right-radius: 0 !important;
 }
 .no-top-padding {
-  padding-top: 0;
+  padding-top: 0 !important;
 }
 .no-bottom-padding {
   padding-bottom: 0;
@@ -126,6 +126,9 @@ i.large {
 }
 .padding-left-12 {
   padding-left: 12px;
+}
+.remove-cart-button {
+  padding-top: 4px !important;
 }
 .capitalize {
   text-transform: capitalize;
