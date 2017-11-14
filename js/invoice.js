@@ -47,26 +47,39 @@ function loadInputListener() {
     var allInputs = $("input");
     allInputs.off();
     allInputs.on('change keyup paste', function () {
-        var user = firebase.auth().currentUser;
         var input = $(this);
-        var itemID = input.parent().parent().attr('id');
         var value = input.val();
-        var cartItem = allCartItems[itemID];
-        var extension = cartItem.extensionSelected;
-        if(value != "" ) {
-            var cartRef = database.ref('carts/' + user.uid + '/' + itemID);
-            if(value < 1) {
-                cartRef.remove().then(function () {
-                    showSnackBar("Removed item <custom class=\"text-capitalize\">" + cartItem.item.name + "</custom> from your cart");
-                });
-            } else {
-                cartRef.set({
-                    amount: value,
-                    extensionSelectedID: extension
-                }).then(function () {
-                    showSnackBar("Updated your cart to show " + value + " of <custom class=\"text-capitalize\">" + cartItem.item.name + "</custom>");
+        if(value != "") {
+            $(this).delay(1500).queue(function() {
 
-                });
+                updateVisual($(this));
+                $(this).dequeue();
+
+            });
+        }
+
+
+        function updateVisual(input) {
+            var user = firebase.auth().currentUser;
+            var itemID = input.parent().parent().attr('id');
+            var value = input.val();
+            var cartItem = allCartItems[itemID];
+            var extension = cartItem.extensionSelected;
+            if(value != "" ) {
+                var cartRef = database.ref('carts/' + user.uid + '/' + itemID);
+                if(value < 1) {
+                    cartRef.remove().then(function () {
+                        showSnackBar("Removed item <custom class=\"text-capitalize\">" + cartItem.item.name + "</custom> from your cart");
+                    });
+                } else {
+                    cartRef.set({
+                        amount: value,
+                        extensionSelectedID: extension
+                    }).then(function () {
+                        showSnackBar("Updated your cart to show " + value + " of <custom class=\"text-capitalize\">" + cartItem.item.name + "</custom>");
+
+                    });
+                }
             }
         }
     });

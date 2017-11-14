@@ -101,7 +101,6 @@ function logOut() {
 var database = firebase.database();
 var storageRef = firebase.storage().ref();
 var allItems = [];
-var allCartItems = [];
 var allCategories = [];
 var lastItem;
 var itemImages = [];
@@ -119,10 +118,11 @@ $(document).ready(function () {
 
 function InitializeCartDBListener() {
     var user = firebase.auth().currentUser;
+    var amountOfCartItems = 0;
 
     function updateCartCounter() {
         var cartItemCounter = $('#shoppingCartAmount');
-        cartItemCounter.html(Object.keys(allCartItems).length);
+        cartItemCounter.html(amountOfCartItems);
     }
 
     if(user){
@@ -134,18 +134,7 @@ function InitializeCartDBListener() {
 
         function parseCartSnapshot(snapshot) {
             var cartData = snapshot.val();
-            allCartItems = [];
-            $.each(cartData, function (itemID, itemObject) {
-                var measurementID = itemObject["extensionSelectedID"];
-                var cartItem = new CartItem();
-                cartItem.item = allItems[itemID.split("EXT")[0]];
-                cartItem.amount = itemObject["amount"];
-
-                cartItem.measurement = cartItem.item.measurements[measurementID];
-
-                allCartItems[itemID] = cartItem;
-
-            });
+            amountOfCartItems= Object.keys(cartData).length;
             updateCartCounter();
         }
     }
@@ -463,7 +452,7 @@ function showAddItemModal(itemID, extensionSelected, user) {
             amount: count,
             extensionSelectedID: extensionSelected
         }).then(function () {
-            showSnackBar("Added " + count + " " + item.name + " to your cart");
+            showSnackBar("Added " + count + " <custom class=\"text-capitalize\">" + item.name + "</custom> to your cart");
             itemModal.modal('hide');
             // Close Modal
         });
@@ -529,9 +518,9 @@ function loadItems(searchText) {
             }
         } else { // If no filtering has happened
             if (!lastItem) {
-                catalogRef = catalogRef.limitToFirst(25);
+                catalogRef = catalogRef.limitToFirst(24);
             } else {
-                catalogRef = catalogRef.orderByKey().startAt(lastItem).limitToFirst(25);
+                catalogRef = catalogRef.orderByKey().startAt(lastItem).limitToFirst(24);
             }
         }
 
@@ -595,10 +584,12 @@ function loadItems(searchText) {
     function loadPreLoadedItemImages() {
         for (var itemID in allItems) {
             var img = document.getElementById('img-' + itemID);
-            if (itemImages[itemID]) {
+            if (itemImages[itemID] && img) {
                 img.src = itemImages[itemID];
             } else {
-                img.src = "./assets/noimage.png";
+                if(img){
+                    img.src = "./assets/noimage.png";
+                }
             }
         }
     }
@@ -626,15 +617,17 @@ function loadItems(searchText) {
 
 
     function searchWithText() {
-        var searchCategory = catalogRef.orderByChild('category')
-            .startAt(searchText)
-            .endAt(searchText + "\uf8ff");
-        var searchName = catalogRef.orderByChild('name')
-            .startAt(searchText)
-            .endAt(searchText + "\uf8ff");
-        var searchSubCategory = catalogRef.orderByChild('subcategory')
-            .startAt(searchText)
-            .endAt(searchText + "\uf8ff");
+        var searchCategory, searchName, searchSubCategory;
+        searchCategory = catalogRef.orderByChild('category')
+                .startAt(searchText)
+                .endAt(searchText + "\uf8ff").limitToFirst(15);
+        searchName = catalogRef.orderByChild('name')
+                .startAt(searchText)
+                .endAt(searchText + "\uf8ff").limitToFirst(15);
+        searchSubCategory = catalogRef.orderByChild('subcategory')
+                .startAt(searchText)
+                .endAt(searchText + "\uf8ff").limitToFirst(5);
+
 
         allItems = [];
         searchCategory.once('value').then(function (snapshot) {
