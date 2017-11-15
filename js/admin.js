@@ -801,13 +801,17 @@ function submitItem(itemID) {
         }
     }
     function createNewCategory(category) {
+        if((category == ""))
+            return;
         var categoryRef = database.ref('categories/'+category);
-        categoryRef.set({
+        categoryRef.update({
             no_sub_cat: true
         });
 
     }
     function createNewSubCategory(subCategory) {
+        if(subCategory == "")
+            return;
         var categoryRef = database.ref('categories/'+category);
         categoryRef.child('no_sub_cat').remove();
         categoryRef.child(subCategory).set(true);

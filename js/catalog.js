@@ -475,7 +475,7 @@ function loadCategories() {
         $.each(categoriesData, function (categoriesID, categoriesObject) {
             var category = new Category();
             category.name = categoriesID;
-            if (!("no_sub_cat" in categoriesObject)) {
+            if (!("no_sub_cat" == categoriesID)) {
                 category.subCategories = categoriesObject;
             }
             allCategories[categoriesID] = category;
