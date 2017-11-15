@@ -810,7 +810,7 @@ function submitItem(itemID) {
 
     }
     function createNewSubCategory(subCategory) {
-        if(subCategory == "")
+        if(category == "")
             return;
         var categoryRef = database.ref('categories/'+category);
         categoryRef.child('no_sub_cat').remove();
