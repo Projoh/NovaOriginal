@@ -11,13 +11,13 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!--<link rel="stylesheet" href="css/index.css">-->
 </head>
-<body>
+<body class="bg-light">
 
 <div class="progress gone">
     <div id="progress-bar" class="progress-bar primary-color" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
 </div>
 
-<div class="jumbotron jumbotron-fluid bg-secondary text-white no-margin no-top-padding">
+<div class="jumbotron jumbotron-fluid bg-success text-white no-margin no-top-padding">
 
     <div class="container" id="heading-container">
         <div class="padding-bottom-60"> </div>
@@ -25,7 +25,7 @@
             <div class="col">
                 <div class="container">
                     <h1 class="display-4" id="title">Control Panel</h1>
-                    <div class="lead"><a href="#!" id="log-out" onclick="logOut()">Log Out</a></div>
+                    <div class="lead"><a href="#!" id="log-out" class="text-dark" onclick="logOut()">Log Out</a></div>
                     <p class="lead" id="done-message"></p>
                     <h1 id="error-text" class="display-4 text-dark"></h1>
                 </div>
@@ -35,15 +35,15 @@
     </div>
 </div>
 <div id="snackbar"></div>
-<ul class="nav nav-pills nav-fill bg-secondary " id="nav-bar">
+<ul class="nav nav-pills nav-fill bg-success " id="nav-bar">
     <li class="nav-item">
-        <a class="nav-link text-dark" href="#"  id="anchor-users" onclick="loadUsers(0 , 25); showContent('users');">Users</a>
+        <a class="nav-link text-dark" href="#"  id="anchor-users" onclick="showContent('users'); loadUsers(); ">Users</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link bg-dark text-white" id="anchor-catalog" onclick="loadItems(); loadCategories(); showContent('catalog')" href="#">Catalog</a>
+        <a class="nav-link bg-dark text-white" id="anchor-catalog" onclick="showContent('catalog'); loadItems(); loadCategories();" href="#">Catalog</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link text-dark" href="#"  id="anchor-carts" onclick="loadCarts(0, 25); showContent('carts')">Carts</a>
+        <a class="nav-link text-dark" href="#"  id="anchor-carts" onclick="showContent('carts'); loadCarts(0, 25);">Carts</a>
     </li>
 </ul>
 
@@ -54,7 +54,7 @@
     <div id="users-container" class="gone padding-bottom-10">
 
         <div class="input-group input-group-lg margin-top-10">
-            <input type="text" class="form-control" placeholder="Search all users..." aria-label="search" aria-describedby="sizing-addon1">
+            <input type="text"  id="users-search" class="form-control" placeholder="Search all users..." aria-label="search" aria-describedby="sizing-addon1">
             <span class="input-group-addon bg-dark" id="search-users"><i class="material-icons large text-white">&#xE8B6;</i></span>
         </div>
 
@@ -144,51 +144,25 @@
 
 
 
-    <div id="carts-container" class="gone">
+    <div id="carts-container" class="gone padding-bottom-10">
 
         <div class="all-carts padding-top-10">
 
-            <div class="input-group input-group-lg margin-top-10">
-                <input type="text" class="form-control" placeholder="Search all carts..." aria-label="search" aria-describedby="sizing-addon1">
-                <span class="input-group-addon bg-dark" id="search-carts"><i class="material-icons large text-white">&#xE8B6;</i></span>
-            </div>
 
+            <div class="all-carts">
 
-            <div class="card margin-top-10">
-                <div class="card-body">
-                    <h4 class="card-title">Billy Bob's Cart</h4>
-                    <h6 class="card-subtitle mb-2 text-muted">$200 dollars</h6>
-                    <p class="card-text">Some of the items, or some info you want</p>
-                    <a href="#" class="card-link float-right">MORE INFO</a>
+                <div class="card margin-top-10">
+                    <div class="card-body">
+                        <h4 class="card-title">Billy Bob's Cart</h4>
+                        <h6 class="card-subtitle mb-2 text-muted">$200 dollars</h6>
+                        <p class="card-text">Some of the items, or some info you want</p>
+                        <a href="#" class="card-link float-right" onclick="moreCartInfo();">MORE INFO</a>
+                    </div>
                 </div>
+
+
             </div>
 
-            <div class="card margin-top-10">
-                <div class="card-body">
-                    <h4 class="card-title">Billy Bob's Cart</h4>
-                    <h6 class="card-subtitle mb-2 text-muted">$200 dollars</h6>
-                    <p class="card-text">Some of the items, or some info you want</p>
-                    <a href="#" class="card-link float-right">MORE INFO</a>
-                </div>
-            </div>
-
-            <div class="card margin-top-10">
-                <div class="card-body">
-                    <h4 class="card-title">Billy Bob's Cart</h4>
-                    <h6 class="card-subtitle mb-2 text-muted">$200 dollars</h6>
-                    <p class="card-text">Some of the items, or some info you want</p>
-                    <a href="#" class="card-link float-right">MORE INFO</a>
-                </div>
-            </div>
-
-            <div class="card margin-top-10">
-                <div class="card-body">
-                    <h4 class="card-title">Billy Bob's Cart</h4>
-                    <h6 class="card-subtitle mb-2 text-muted">$200 dollars</h6>
-                    <p class="card-text">Some of the items, or some info you want</p>
-                    <a href="#" class="card-link float-right">MORE INFO</a>
-                </div>
-            </div>
 
 
 
@@ -196,6 +170,9 @@
 
 
         </div>
+
+
+
 
 
 

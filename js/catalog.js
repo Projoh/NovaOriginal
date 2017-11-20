@@ -299,7 +299,7 @@ function showItemModal(itemID) {
         var imageSrc = (itemImages[itemID]) ? itemImages[itemID] : "assets\/noimage.png";
         var priceText = (approved) ? firstPrice.price : (currentUser) ?
             "Verification in progress" :
-            "<a class=\"text-info\" onclick=\"redirectToRegisterToViewPrice();\">View Price<\/a>";
+            "<a class=\"text-info icon\" onclick=\"redirectToRegisterToViewPrice();\">View Price<\/a>";
         modalHTML += "<div id=\"itemModal\" class=\"modal fade bd-example-modal-lg\" tabindex=\"-1\" role=\"dialog\"";
         modalHTML += "             aria-labelledby=\"myLargeModalLabel\" aria-hidden=\"true\">";
         modalHTML += "            <div class=\"modal-dialog modal-lg\">";

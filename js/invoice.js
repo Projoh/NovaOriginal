@@ -85,6 +85,11 @@ function loadInputListener() {
     });
 }
 
+function showEmptyCart() {
+    var topContainer = $('');
+
+}
+
 function loadCart() {
     var user = firebase.auth().currentUser;
     var approvedUser = (user.uid in approvedUsers);
@@ -247,8 +252,12 @@ function loadCart() {
                 allCartItems[itemID] = cartItem;
                 counter++;
             });
-            amountOfCarItems = counter;
-            loadCartItemData();
+            if(jQuery.isEmptyObject(allCartItems)) {
+                showEmptyCart();
+            } else {
+                amountOfCarItems = counter;
+                loadCartItemData();
+            }
         }
     }
 }

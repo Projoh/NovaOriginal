@@ -42,6 +42,8 @@ function sanitizeRef(input) {
     return input? input.replace(/[&\/\\#,+() $~%'":*?<>{}.]/g, '') : "";
 }
 
+
+
 $( document ).ready(function() {
     console.log( "Initialized!" );
     // Pull approved users
@@ -49,6 +51,7 @@ $( document ).ready(function() {
     loadItems();
     loadCategories();
     initializeCatalogListeners();
+    initializeUsersListeners();
 });
 
 var allUsers= [];
@@ -59,19 +62,20 @@ var database = firebase.database();
 var storageRef = firebase.storage().ref();
 var usersRef;
 var catalogRef;
-var itemsRef;
+var cartsRef;
 
 var allItems = [];
 var allCategories = [];
+var allCarts = [];
 var lastItem;
 var itemImages = [];
-// var storageRef = firebase.storage().ref();
 
 function showContent(content) {
 
     if(usersRef) usersRef.off();
     if(catalogRef) catalogRef.off();
-    if(itemsRef) itemsRef.off();
+    if(cartsRef) cartsRef.off();
+    lastItem = null;
 
 
     var containerToShow = $('#'+content+'-container');
@@ -100,14 +104,56 @@ function showContent(content) {
 
 
 // USERS
-function loadUsers(start, end) {
-    var usersRef = database.ref('/users/').orderByChild('registerTime')
-        .limitToLast(end).startAt(start);
-    showProgressBar();
-    usersRef.on('value', function(snapshot) {
+function loadUsers(searchText) {
+    var usersRef;
+    var searchName, searchEmail, searchTelephone, searchCompany;
 
-        var usersData = snapshot.val();
+
+
+    if(searchText) {
+        searchName = database.ref('/users/').orderByChild('name')
+            .startAt(searchText)
+            .endAt(searchText+"\uf8ff");
+        searchEmail = database.ref('/users/').orderByChild('email')
+            .startAt(searchText)
+            .endAt(searchText+"\uf8ff");
+        searchTelephone = database.ref('/users/').orderByChild('telephone')
+            .startAt(searchText)
+            .endAt(searchText+"\uf8ff");
+        searchCompany = database.ref('/users/').orderByChild('company')
+            .startAt(searchText)
+            .endAt(searchText+"\uf8ff");
+
+
+        showProgressBar();
         allUsers = [];
+        searchName.once('value').then(function(snapshot) {
+            parseUserSnapshot(snapshot);
+        });
+        searchEmail.once('value').then(function(snapshot) {
+            parseUserSnapshot(snapshot);
+        });
+        searchTelephone.once('value').then(function(snapshot) {
+            parseUserSnapshot(snapshot);
+        });
+        searchCompany.once('value').then(function(snapshot) {
+            parseUserSnapshot(snapshot);
+            showUsers();
+        });
+
+    } else {
+        usersRef = database.ref('/users/').orderByChild('registerTime');
+
+        showProgressBar();
+        usersRef.on('value', function(snapshot) {
+            allUsers = [];
+            parseUserSnapshot(snapshot);
+            showUsers();
+        });
+    }
+
+    function parseUserSnapshot(snapshot) {
+        var usersData = snapshot.val();
         $.each(usersData, function(userID, userObject) {
             var user = new User();
             user.id = userID;
@@ -142,12 +188,12 @@ function loadUsers(start, end) {
         }
 
         loadApprovedUsers();
-        showUsers();
         hideProgressBar();
-    });
+    }
+
 
 }
-function showUsers() {
+function showUsers()  {
     var userHTML="";
     var usersContainer = $('.all-users');
     usersContainer.html("");
@@ -156,7 +202,7 @@ function showUsers() {
         buildHtmlObject(user);
 
         function buildHtmlObject(user) {
-            userHTML += "<div class=\"card margin-top-10\" id=\"";
+            userHTML += "<div class=\"card margin-top-10 text-capitalize\" id=\"";
             userHTML += user.id;
             userHTML += "\">";
             userHTML += "                <div class=\"card-body\">";
@@ -189,7 +235,7 @@ function manageUser(userID) {
         var modalContainer = $(".modals-container");
         userModalHTML += "<div id=\"";
         userModalHTML += "userModal";
-        userModalHTML += "\" class=\"modal fade bd-example-modal-lg\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myLargeModalLabel\" aria-hidden=\"true\">";
+        userModalHTML += "\" class=\"modal text-capitalize fade bd-example-modal-lg\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myLargeModalLabel\" aria-hidden=\"true\">";
         userModalHTML += "        <div class=\"modal-dialog modal-lg\">";
         userModalHTML += "            <div class=\"modal-content padding-16\">";
         userModalHTML += "                <h1 class=\"display-4\">";
@@ -199,10 +245,12 @@ function manageUser(userID) {
         userModalHTML += user.name;
         userModalHTML += "<\/p>";
         userModalHTML += "                <p class=\"h3\">";
-        userModalHTML += user.number;
+        userModalHTML += user.telephone;
         userModalHTML += "<\/p>";
         userModalHTML += "                <div class=\"text-dark\">";
         userModalHTML += user.email;
+        userModalHTML += "<br> Location: ";
+        userModalHTML += user.address;
         userModalHTML += "<\/div>";
         userModalHTML += "                <p class=\"lead\">";
         userModalHTML += user.message;
@@ -242,6 +290,17 @@ function approveUser(userID) {
 function disapproveUser(userID) {
     var user = allUsers[userID];
     database.ref('/approved_users/' + user.id).remove();
+}
+function initializeUsersListeners() {
+    var searchBar = $('#users-search');
+
+    searchBar.on('input', function(){
+        var searchText = searchBar.val();
+        searchText = (searchText) ? searchText.toLowerCase() : null;
+
+        loadUsers(searchText);
+
+    })
 }
 // END USERS
 
@@ -426,9 +485,9 @@ function loadItems(searchText) {// Check Catalog.js for more info
             }
         } else { // If no filtering has happened
             if(!lastItem){
-                catalogRef = catalogRef.limitToFirst(25);
+                catalogRef = catalogRef.limitToFirst(24);
             } else {
-                catalogRef = catalogRef.orderByKey().startAt(lastItem).limitToFirst(25);
+                catalogRef = catalogRef.orderByKey().startAt(lastItem).limitToFirst(24);
             }
         }
 
@@ -570,20 +629,20 @@ function showAllItems() {
         HTML += "\" class=\"col-sm-12 col-md-6 col-lg-4 margin-bottom-10\" onclick=\"editItem('";
         HTML += item.id;
         HTML += "');\">";
-        HTML += "                    <div class=\"card text-white\">";
+        HTML += "                    <div class=\"card text-white full-height\">";
         HTML += "                        <div class=\"img mx-auto row align-items-center\" style=\"height: 300px;width:auto;\">";
-        HTML += "                            <img id=\"img-" + item.id +"\" class=\"col card-img-top mh-100 width-auto\" src=\"assets\/noimage.png\"";
+        HTML += "                            <img id=\"img-" + item.id + "\" class=\"col card-img-top mh-100 width-auto\" src=\"assets\/noimage.png\"";
         HTML += "                                 alt=\"Image of the specified item\">";
         HTML += "                        <\/div>";
         HTML += "                        <div class=\"card-body bg-dark\">";
         HTML += "                            <h4 class=\"card-title primary-color-text capitalize\">";
-        HTML +=  item.name;
+        HTML += item.name;
         HTML += "<\/h4>";
         HTML += "                            <p class=\"card-text text-truncate\" style=\"height: 4rem;\">";
         HTML += item.description;
         HTML += "                            <\/p>";
         HTML += "                            <div class=\"card-footer float-right bg-transparent no-border no-top-padding no-bottom-padding\">";
-        HTML += "                                <a href=\"javascript:;\" class=\"btn primary-color-text\">Edit<\/a>";
+        HTML += "                                <a href=\"javascript:;\" class=\"btn primary-color-text\">Details<\/a>";
         HTML += "                            <\/div>";
         HTML += "                        <\/div>";
         HTML += "";
@@ -827,14 +886,43 @@ var measurementDelete = function () {
 
 
 
-
-
-
-
-
+// CARTS
 function loadCarts(start, end) {
+    var cartsRef = database.ref('/carts/');
+
+    showProgressBar();
+
+
+
+    cartsRef.on('value', function(snapshot) {
+        allCarts = [];
+        parseCarSnapshot(snapshot);
+        showCarts();
+    });
+
+    function parseCarSnapshot(snapshot) {
+        var cartData = snapshot.val();
+        $.each(cartData, function(userID, cartObject) {
+
+            Object.keys(user).forEach(function(key,index) {
+                if(user[key] == undefined){
+                    user[key] = "";
+                }
+            });
+            allUsers[userID] = user;
+        });
+
+        $
+    }
+}
+function showCarts() {
 
 }
+function moreCartInfo(userID) {
+
+}
+
+// END CARTS
 
 
 

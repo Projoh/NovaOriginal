@@ -90,10 +90,10 @@ function createNewUser(userID) {
 
 
     newUser.email = sanitizeInput($('#email').val());
-    newUser.name = sanitizeInput($('#name').val());
-    newUser.company = sanitizeInput($('#company').val());
+    newUser.name = sanitizeInput($('#name').val()).toLowerCase();
+    newUser.company = sanitizeInput($('#company').val()).toLowerCase();
     newUser.telephone = sanitizeInput($('#telephone').val());
-    newUser.address = sanitizeInput($('#address').val());
+    newUser.address = sanitizeInput($('#address').val()).toLowerCase();
     newUser.message = sanitizeInput($('#message').val());
     newUser.careSetting = sanitizeInput($('#caresetting').find(":selected").text());
     newUser.registerTime = Math.round(new Date() / 1000);
