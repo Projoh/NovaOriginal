@@ -792,13 +792,16 @@ function submitItem(itemID) {
 
 
     database.ref('catalog/' + itemID+'/measurement/').remove();
-    for(var measurementID in measurements) {
-        var measurement = $(measurements[measurementID]);
+    for(var i = 0; i < measurements.length; i++) {
+        var measurement = $(measurements[i]);
+        if(!measurement){
+            break;
+        }
         var dimension = measurement.find('.measurementDimension').first().val();
         var price = measurement.find('.measurementPrice').first().val();
         var measurementIDVal = measurement.find('.measurementID').first().val();
         var measurementExt = (measurementIDVal == "") ? sanitizeRef(dimension+price) : sanitizeRef(measurementIDVal);
-        if(dimension != "" && price != "") {
+        if(dimension && price) {
             var measurementRef =  database.ref('catalog/' + itemID+'/measurement/'+measurementExt);
             measurementRef.update({
                 dimension: dimension,
