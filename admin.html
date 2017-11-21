@@ -146,30 +146,9 @@
 
     <div id="carts-container" class="gone padding-bottom-10">
 
-        <div class="all-carts padding-top-10">
 
+        <div class="all-carts">
 
-            <div class="all-carts">
-
-                <div class="card margin-top-10">
-                    <div class="card-body">
-                        <h4 class="card-title">Billy Bob's Cart</h4>
-                        <h6 class="card-subtitle mb-2 text-muted">$200 dollars</h6>
-                        <p class="card-text">Some of the items, or some info you want</p>
-                        <a href="#" class="card-link float-right" onclick="moreCartInfo();">MORE INFO</a>
-                    </div>
-                </div>
-                <div class="card margin-top-10 bg-light">
-                    <div class="card-body">
-                        <h4 class="card-title">Billy Bob's Cart</h4>
-                        <h6 class="card-subtitle mb-2 text-muted">$200 dollars</h6>
-                        <p class="card-text">Some of the items, or some info you want</p>
-                        <a href="#" class="card-link float-right" onclick="moreCartInfo();">MORE INFO</a>
-                    </div>
-                </div>
-
-
-            </div>
 
 
 
@@ -274,6 +253,27 @@
 </div>
 
 
+
+<div id="cartViewModal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content padding-16">
+            <h1><custom id="cartOwnerName" class="text-capitalize">Jamal</custom>'s Cart</h1>
+            <small class="lead">Total: $<custom id="totalCartPrice">2321</custom></small>
+            <ul class="list-group" id="cart-items-list">
+
+                <li class="list-group-item h5">Cras justo odio
+                    <small class="text-secondary">$23.12</small>
+                    <span class="badge badge-primary badge-pill float-right">1</span>
+                </li>
+
+            </ul>
+            <div class="modal-footer">
+                <button id="archiveCartButton" type="button" class="btn primary-color text-white" onclick="archiveCart(cartNumber);">Archive</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Okay</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
 <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>

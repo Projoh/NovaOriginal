@@ -52,6 +52,7 @@ $( document ).ready(function() {
     loadCategories();
     initializeCatalogListeners();
     initializeUsersListeners();
+
 });
 
 var allUsers= [];
@@ -96,10 +97,6 @@ function showContent(content) {
     $(anchorToHighlight).addClass("bg-dark text-white");
     $(containerToShow).removeClass('gone');
 }
-
-
-
-
 
 
 
@@ -155,23 +152,7 @@ function loadUsers(searchText) {
     function parseUserSnapshot(snapshot) {
         var usersData = snapshot.val();
         $.each(usersData, function(userID, userObject) {
-            var user = new User();
-            user.id = userID;
-            user.name = userObject["name"];
-            user.email = userObject["email"];
-            user.company = userObject["company"];
-            user.telephone = userObject["telephone"];
-            user.address = userObject["address"];
-            user.message = userObject["message"];
-            user.careSetting = userObject["careSetting"];
-            user.registerTime = userObject["registerTime"];
-
-            Object.keys(user).forEach(function(key,index) {
-                if(user[key] == undefined){
-                    user[key] = "";
-                }
-            });
-            allUsers[userID] = user;
+            parseUserFromServerObject(userID, userObject);
         });
 
         function loadApprovedUsers() {
@@ -192,6 +173,25 @@ function loadUsers(searchText) {
     }
 
 
+}
+function parseUserFromServerObject(userID, userObject) {
+    var user = new User();
+    user.id = userID;
+    user.name = userObject["name"];
+    user.email = userObject["email"];
+    user.company = userObject["company"];
+    user.telephone = userObject["telephone"];
+    user.address = userObject["address"];
+    user.message = userObject["message"];
+    user.careSetting = userObject["careSetting"];
+    user.registerTime = userObject["registerTime"];
+
+    Object.keys(user).forEach(function(key,index) {
+        if(user[key] == undefined){
+            user[key] = "";
+        }
+    });
+    allUsers[userID] = user;
 }
 function showUsers()  {
     var userHTML="";
@@ -465,6 +465,45 @@ function loadCategories() {
         editCategories.html(editCategoryHTML);
     }
 }
+function parseEachItemFromServerObject(itemID, itemObject) {
+    lastItem = itemID;
+    var item = new Item();
+    item.id = itemID;
+    item.itemID = itemObject["id"];
+    item.name = itemObject["name"];
+    item.image = itemObject["image"];
+    item.category = itemObject["category"];
+    item.subcategory = itemObject["subcategory"];
+    item.description = itemObject["description"];
+    item.unit = itemObject["unit"];
+    var measurementObjects = itemObject["measurement"];
+
+    for(var measurmentObID in measurementObjects) {
+        var measureOb = measurementObjects[measurmentObID];
+        var measurement = new Measurement();
+        measurement.id = measurmentObID;
+        measurement.dimension = measureOb["dimension"];
+        measurement.price = measureOb["price"];
+        item.measurements.push(measurement);
+    }
+
+
+    item.measurements.sort(function (a, b) {
+        return a.dimension - b.dimension;
+    });
+
+    Object.keys(item).forEach(function(key,index) {
+        if(item[key] == undefined){
+            item[key] = "";
+        }
+    });
+    allItems[itemID] = item;
+}
+function parseItemSnapshotData(itemsData) {
+    $.each(itemsData, function(itemID, itemObject) {
+        parseEachItemFromServerObject(itemID, itemObject);
+    });
+}
 function loadItems(searchText) {// Check Catalog.js for more info
     catalogRef = database.ref('/catalog/');
 
@@ -499,41 +538,7 @@ function loadItems(searchText) {// Check Catalog.js for more info
 
     function parseItemSnapShot(snapshot, dontShowChanges) {
         var itemsData = snapshot.val();
-        $.each(itemsData, function(itemID, itemObject) {
-            lastItem = itemID;
-            var item = new Item();
-            item.id = itemID;
-            item.itemID = itemObject["id"];
-            item.name = itemObject["name"];
-            item.image = itemObject["image"];
-            item.category = itemObject["category"];
-            item.subcategory = itemObject["subcategory"];
-            item.description = itemObject["description"];
-            item.unit = itemObject["unit"];
-            var measurementObjects = itemObject["measurement"];
-
-            for(var measurmentObID in measurementObjects) {
-                var measureOb = measurementObjects[measurmentObID];
-                var measurement = new Measurement();
-                measurement.id = measurmentObID;
-                measurement.dimension = measureOb["dimension"];
-                measurement.price = measureOb["price"];
-                item.measurements.push(measurement);
-            }
-
-
-            item.measurements.sort(function (a, b) {
-                return a.dimension - b.dimension;
-            });
-
-            Object.keys(item).forEach(function(key,index) {
-                if(item[key] == undefined){
-                    item[key] = "";
-                }
-            });
-            allItems[itemID] = item;
-
-        });
+        parseItemSnapshotData(itemsData);
         hideProgressBar();
         if(!dontShowChanges){
             showAllItems();
@@ -887,39 +892,191 @@ var measurementDelete = function () {
 
 
 // CARTS
-function loadCarts(start, end) {
-    var cartsRef = database.ref('/carts/');
+function loadCarts() {
+    cartsRef = database.ref('/carts/');
+    var archivedCartsRef = database.ref('/archived_carts/');
 
     showProgressBar();
 
 
+    function pullArchivedCarts() {
+        archivedCartsRef.once('value').then(function(snapshot) {
+            parseCartSnapshot(snapshot, true);
+        });
+    }
 
     cartsRef.on('value', function(snapshot) {
         allCarts = [];
-        parseCarSnapshot(snapshot);
-        showCarts();
+        parseCartSnapshot(snapshot);
+        pullArchivedCarts();
     });
 
-    function parseCarSnapshot(snapshot) {
+
+
+
+    function parseCartItemData(cart, cartItemID) {
+        var cartItem = cart.cartItems[cartItemID];
+        var cartItemRef = database.ref('/catalog/' + cartItem.item);
+        cartItemRef.once('value').then(function (snapshot) {
+            var itemsData = snapshot.val();
+            parseEachItemFromServerObject(cartItem.item, itemsData);
+            cart.doneLoading = true;
+            showCarts();
+        });
+    }
+
+    function loadItemData() {
+        for(var cartID in allCarts) {
+            var cart = allCarts[cartID];
+            for(var cartItemID in cart.cartItems) {
+                parseCartItemData(cart, cartItemID);
+            }
+        }
+    }
+
+    function loadUserData() {
+        for(var cartID in allCarts) {
+            var cart = allCarts[cartID];
+            var userRef = database.ref('/users/'+cart.user.id);
+            userRef.once('value').then(function (snapshot) {
+                var userData = snapshot.val();
+                parseUserFromServerObject(cart.user.id, userData);
+                cart.user = allUsers[cart.user.id];
+            })
+        }
+    }
+
+    function parseCartSnapshot(snapshot, archived) {
         var cartData = snapshot.val();
         $.each(cartData, function(userID, cartObject) {
+            var user = new User();
+            var cart = new Cart();
+            for(var itemObID in cartObject) {
+                var cartItem = new CartItem();
+                var item = cartObject[itemObID];
 
+                cart.archived = !!(archived);
+                cartItem.item = itemObID.split("EXT")[0];
+                cartItem.amount = item["amount"];
+                cartItem.measurement = item["extensionSelectedID"];
+                cart.cartItems[itemObID] = cartItem;
+            }
+            user.id = userID;
             Object.keys(user).forEach(function(key,index) {
                 if(user[key] == undefined){
                     user[key] = "";
                 }
             });
-            allUsers[userID] = user;
-        });
 
-        $
+            cart.user = user;
+            allCarts.push(cart);
+
+        });
+        loadUserData();
+        loadItemData();
     }
 }
 function showCarts() {
+    var HTML = "";
+    for(var cartID in allCarts) {
+        var cart = allCarts[cartID];
+        var cartArchivedText = (cart.archived) ?  "bg-light" : "";
+        if(!cart.doneLoading){
+            return;
+        }
+        calculateItemSummary(cart);
+
+
+        HTML += "<div class=\"card text-capitalize margin-top-10 ";
+        HTML += cartArchivedText;
+        HTML += "\">";
+        HTML += "                    <div class=\"card-body\">";
+        HTML += "                        <h4 class=\"card-title\">";
+        HTML += cart.user.name;
+        HTML += "'s Cart<\/h4>";
+        HTML += "                        <h6 class=\"card-subtitle mb-2 text-muted\">$";
+        HTML += cart.totalCost;
+        HTML += " dollars<\/h6>";
+        HTML += "                        <p class=\"card-text text-truncate\">";
+        HTML += cart.itemSummary;
+        HTML += "<\/p>";
+        HTML += "                        <a href=\"#\" class=\"card-link float-right\" onclick=\"moreCartInfo('";
+        HTML += cartID;
+        HTML += "');\">MORE INFO<\/a>";
+        HTML += "                    <\/div>";
+        HTML += "                <\/div>";
+    }
+    var cartContainer = $('#carts-container');
+    cartContainer.html(HTML);
+
+    function calculateItemSummary(cart) {
+        cart.itemSummary = null;
+        cart.totalCost = 0;
+        for(var cartItemID in cart.cartItems) {
+            var cartItem = cart.cartItems[cartItemID];
+            var itemData = allItems[cartItem.item];
+            var itemMeasurementData = itemData.measurements[cartItem.measurement];
+            cart.itemSummary = (cart.itemSummary) ? cart.itemSummary + " | <b>" + cartItem.amount + "</b> " + itemData.name + " (" + itemMeasurementData.dimension + " " + itemData.unit + ")"
+                : "<b>" + cartItem.amount + "</b> " + itemData.name + " (" + itemMeasurementData.dimension + " " + itemData.unit + ")";
+            cart.totalCost += (
+                parseFloat(itemMeasurementData.price.replace('$',''))
+                *
+                parseFloat(cartItem.amount));
+        }
+        cart.totalCost *= 1.07;
+        cart.totalCost = cart.totalCost.toFixed(2);
+    }
 
 }
-function moreCartInfo(userID) {
+function moreCartInfo(cartNumber) {
+    var HTML="";
+    var cart = allCarts[cartNumber];
+    var memNameOb = $('#cartOwnerName');
+    var totalAmountOb = $('#totalCartPrice');
+    var cartItemsListContainer = $('#cart-items-list');
+    var archiveButtonjQuery = $('#archiveCartButton');
+    var archiveButton = document.getElementById("archiveCartButton");
 
+    totalAmountOb.html(cart.totalCost);
+    memNameOb.html(cart.user.name);
+    for(var cartItemID in cart.cartItems) {
+        var cartItem = cart.cartItems[cartItemID];
+        var itemData = allItems[cartItem.item];
+        var itemMeasurementData = itemData.measurements[cartItem.measurement];
+        HTML += "<li class=\"list-group-item text-capitalize h5\">";
+        HTML += itemData.name;
+        HTML += "                    <small class=\"text-secondary\">";
+        HTML += itemMeasurementData.price;
+        HTML += "<\/small>";
+        HTML += "                    <span class=\"badge badge-primary badge-pill float-right\">";
+        HTML += cartItem.amount;
+        HTML += "<\/span>";
+        HTML += "                <\/li>";
+    }
+    cartItemsListContainer.html(HTML);
+
+    if(cart.archived) {
+        archiveButtonjQuery.addClass('gone');
+    } else {
+        archiveButtonjQuery.removeClass('gone');
+        archiveButton.setAttribute( "onclick", "archiveCart("+cartNumber+")" );
+    }
+
+    $('#cartViewModal').modal({
+        keyboard: false
+    }).modal('show');
+
+}
+function archiveCart(cartNumber) {
+    var cart = allCarts[cartNumber];
+    var oldRef = database.ref('/carts/'+cart.user.id);
+    var archivedCartsRef = database.ref('/archived_carts/'+cart.user.id);
+
+    oldRef.once('value').then(function (snapshot) {
+        archivedCartsRef.set(snapshot.val()).then(function () {
+            oldRef.remove();
+        })
+    });
 }
 
 // END CARTS
@@ -938,8 +1095,19 @@ function User() {
     this.registerTime = 0;
 }
 
+function CartItem() {
+    this.item = null;
+    this.amount = 0;
+    this.measurement = null;
+}
+
 function Cart() {
-    this.id = "";
+    this.user = null;
+    this.archived = false;
+    this.cartItems = [];
+    this.totalCost = 0;
+    this.doneLoading = false;
+    this.itemSummary = "";
 }
 
 function Item() {
