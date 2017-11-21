@@ -1078,6 +1078,7 @@ function archiveCart(cartNumber) {
     oldRef.once('value').then(function (snapshot) {
         archivedCartsRef.set(snapshot.val()).then(function () {
             oldRef.remove();
+            $('#cartViewModal').modal('hide');
         })
     });
 }
