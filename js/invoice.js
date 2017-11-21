@@ -64,21 +64,23 @@ function loadInputListener() {
             var itemID = input.parent().parent().attr('id');
             var value = input.val();
             var cartItem = allCartItems[itemID];
-            var extension = cartItem.extensionSelected;
-            if(value != "" ) {
-                var cartRef = database.ref('carts/' + user.uid + '/' + itemID);
-                if(value < 1) {
-                    cartRef.remove().then(function () {
-                        showSnackBar("Removed item <custom class=\"text-capitalize\">" + cartItem.item.name + "</custom> from your cart");
-                    });
-                } else {
-                    cartRef.set({
-                        amount: value,
-                        extensionSelectedID: extension
-                    }).then(function () {
-                        showSnackBar("Updated your cart to show " + value + " of <custom class=\"text-capitalize\">" + cartItem.item.name + "</custom>");
+            if(cartItem){
+                var extension = cartItem.extensionSelected;
+                if(value != "" ) {
+                    var cartRef = database.ref('carts/' + user.uid + '/' + itemID);
+                    if(value < 1) {
+                        cartRef.remove().then(function () {
+                            showSnackBar("Removed item <custom class=\"text-capitalize\">" + cartItem.item.name + "</custom> from your cart");
+                        });
+                    } else {
+                        cartRef.set({
+                            amount: value,
+                            extensionSelectedID: extension
+                        }).then(function () {
+                            showSnackBar("Updated your cart to show " + value + " of <custom class=\"text-capitalize\">" + cartItem.item.name + "</custom>");
 
-                    });
+                        });
+                    }
                 }
             }
         }
@@ -86,8 +88,13 @@ function loadInputListener() {
 }
 
 function showEmptyCart() {
-    var topContainer = $('');
+    var topContainer = $('#heading-container');
+    var cartsContainer = $('#carts-container');
+    var noItemsMessage = $('#no-items-message');
 
+    topContainer.addClass('full-screen no-margin');
+    cartsContainer.addClass('gone');
+    noItemsMessage.removeClass('gone');
 }
 
 function loadCart() {

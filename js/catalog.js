@@ -134,7 +134,7 @@ function InitializeCartDBListener() {
 
         function parseCartSnapshot(snapshot) {
             var cartData = snapshot.val();
-            amountOfCartItems= Object.keys(cartData).length;
+            amountOfCartItems= (cartData) ? Object.keys(cartData).length : 0;
             updateCartCounter();
         }
     }

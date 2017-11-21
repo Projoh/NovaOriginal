@@ -42,19 +42,20 @@
         </button>
 
     </nav>
-    <div class="container full-screen no-margin" id="heading-container">
+    <div class="container" id="heading-container">
         <div class="padding-bottom-10 padding-top-10">
             <div class="containe margin-top-10">
                 <h1 class="display-3">Invoice</h1>
+                <p id="no-items-message" class="lead gone">You currently have no items in your cart. Add some items from the <a href="./catalog.html">Catalog</a> and they will appear here.</p>
             </div>
         </div>
     </div>
 </div>
 
 
-<div class="container padding-top-10">
+<div id="carts-container" class="container padding-top-10">
 
-    <table class="table padding-bottom-10 padding-top-10">
+    <table class="table table-responsive padding-bottom-10 padding-top-10">
         <thead>
         <tr>
             <th scope="col">Item</th>

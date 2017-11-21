@@ -940,7 +940,6 @@ function User() {
 
 function Cart() {
     this.id = "";
-
 }
 
 function Item() {
