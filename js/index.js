@@ -64,6 +64,13 @@ $(function() {
         AttemptLogin();
     });
 
+    $('#contact-us-form').on("submit",function(e) {
+        e.preventDefault();
+        sendEmail();
+        $('#contact-us-form').reset();
+        showSnackBar("Email client initiated! Please  hit send.");
+    });
+
 });
 
 function showSnackBar(messageText) {
@@ -82,4 +89,35 @@ function logOut() {
     }).catch(function(error) {
         // An error happened.
     });
+}
+
+function sendEmail() {
+    var fullName = fetchValue($('#inputName'));
+    var phoneNumber= fetchValue($('#phoneNumber'));
+    var address = fetchValue($('#inputAddress')) + " " +
+        fetchValue($('#inputCity')) +
+        " " + fetchValue($('#inputState')) + " " +
+        fetchValue($('#inputZip'));
+    var messageText = fetchValue($('#messageTextArea'));
+
+    messageText = encodeURIComponent(messageText +
+        "\r\n\r\n\r\n" + address + "\r\n" + phoneNumber + "\r\n" + fullName);
+    var subjectText = encodeURIComponent(fullName + " " + phoneNumber + " :Contact Us");
+
+    // window.location.href = "mailto:"+"jaffersyed@novamedicaltechnologies.com"+
+    //     "?subject="+subjectText +
+    //     +"&body=" + messageText;
+
+    window.location.href = "mailto:" +
+        "jaffersyed@novamedicaltechnologies.com" +
+        "?subject=" +
+        subjectText +
+        "&body=" +
+        messageText;
+
+
+}
+
+function fetchValue(object) {
+    return (object) ? object.val() : "";
 }
