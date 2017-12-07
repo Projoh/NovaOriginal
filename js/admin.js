@@ -1,7 +1,7 @@
 function initializeAuthListener() {
     firebase.auth().onAuthStateChanged(function(user) {
         if(user){
-            if (user.uid == 'Dx0MdFm8ajSyn0DRkzvPU3PzljF2') {
+            if (user.uid == 'Dmk9nzFKpoXvpWqZu7ew2GpPVRe2') {
                 return;
             }
         }
